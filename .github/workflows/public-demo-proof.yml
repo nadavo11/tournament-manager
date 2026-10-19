@@ -1,0 +1,42 @@
+name: External public demo verification
+on:
+  push:
+    branches: [codex/live-tournament]
+    paths: [.github/workflows/public-demo-proof.yml]
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Public HTTPS demo base URL
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch the real application from an independent GitHub-hosted client
+        env:
+          DEMO_URL: ${{ inputs.url || 'https://myth-premiere-outstanding-documented.trycloudflare.com' }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,datetime
+          base=os.environ['DEMO_URL'].rstrip('/')
+          assert base.startswith('https://')
+          def fetch(path):
+              with urllib.request.urlopen(base+path,timeout=30) as r:
+                  assert r.status==200
+                  return r.read()
+          html=fetch('/').decode()
+          assert 'Bracket Live' in html
+          tournaments=json.loads(fetch('/api/live/tournaments'))
+          demo=next(t for t in tournaments if t['name']=='Community Cup 2026')
+          state=json.loads(fetch('/api/live/tournaments/'+str(demo['id'])))
+          groups=state['stages'][0]['stage_items']
+          matches=[m for g in groups for r in g['rounds'] for m in r['matches']]
+          assert len(groups)==4 and sum(g['team_count'] for g in groups)==16 and len(matches)==24
+          assert len(state['standings'])>=4
+          source=fetch('/source.zip')
+          assert source[:2]==b'PK'
+          print(json.dumps({'passed':True,'url':base,'client':'GitHub-hosted ubuntu-latest','checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'groups':len(groups),'teams':16,'matches':len(matches),'source_bytes':len(source)},indent=2))
+          PY

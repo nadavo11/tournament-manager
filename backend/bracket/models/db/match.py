@@ -40,15 +40,24 @@ class MatchInsertable(MatchBaseInsertable):
 
 class Match(MatchInsertable):
     id: MatchId
+    live_status: str = "COMPLETED"
+    live_version: int = 0
+    tiebreak_winner: int | None = None
     stage_item_input1: StageItemInput | None = None
     stage_item_input2: StageItemInput | None = None
 
     def get_winner(self) -> StageItemInput | None:
+        if self.live_status != "COMPLETED":
+            return None
         if self.stage_item_input1_score > self.stage_item_input2_score:
             return self.stage_item_input1
         if self.stage_item_input1_score < self.stage_item_input2_score:
             return self.stage_item_input2
 
+        if self.tiebreak_winner == 1:
+            return self.stage_item_input1
+        if self.tiebreak_winner == 2:
+            return self.stage_item_input2
         return None
 
 

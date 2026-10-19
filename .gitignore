@@ -17,3 +17,14 @@ backend/static
 backend/frontend-dist
 
 /process-compose.yml
+
+.runtime/
+.venv/
+playwright-report/
+test-results/
+.local/
+*.log
+backend/source.zip
+/evidence/
+e2e/evidence/report/
+e2e/evidence/video/

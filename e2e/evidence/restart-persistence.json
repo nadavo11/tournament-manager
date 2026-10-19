@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "restarted": [
+    "PostgreSQL 17",
+    "FastAPI/Uvicorn"
+  ],
+  "tournament": 1,
+  "sha256_before": "5c344bf058cb9ef61de6bfc3d62eab5ce670d10a8140e7e63b7b68df7e890c0c",
+  "sha256_after": "5c344bf058cb9ef61de6bfc3d62eab5ce670d10a8140e7e63b7b68df7e890c0c",
+  "checked_at": "2026-10-19T15:21:43.785848+00:00"
+}

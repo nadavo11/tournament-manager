@@ -1,0 +1,11 @@
+FROM python:3.13-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+WORKDIR /app
+ENV DEMO_PRIVATE_DIR=/app/.local
+COPY backend/pyproject.toml backend/uv.lock /app/
+RUN uv sync --locked --no-dev
+COPY backend /app
+RUN mkdir -p static && useradd --system bracket && chown -R bracket /app
+USER bracket
+EXPOSE 8400
+CMD ["uv", "run", "--locked", "--no-dev", "uvicorn", "bracket.app:app", "--host", "0.0.0.0", "--port", "8400", "--proxy-headers"]

@@ -1,0 +1,215 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Users\\nadav\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+      "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\node_modules\\playwright\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\playwright.config.cjs",
+    "rootDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.cjs"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e",
+        "snapshotDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e",
+        "testIgnore": [],
+        "testMatch": "*.spec.cjs",
+        "timeout": 180000,
+        "use": {
+          "baseURL": "https://myth-premiere-outstanding-documented.trycloudflare.com",
+          "headless": true,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "evidence/results.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "evidence/report",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "multiuser.spec.cjs",
+      "file": "multiuser.spec.cjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "four independent sessions synchronize scores, standings, conflicts, permissions and reloads",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23896,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "PASS: Four isolated browser contexts authenticated independently {\"identities\":[\"Administrator · Organizer\",\"Scorekeeper A · Scorekeeper\",\"Scorekeeper B · Scorekeeper\",\"Public viewer · Read only\"]}\n"
+                    },
+                    {
+                      "text": "PASS: Simultaneous writes to different matches appear in all sessions without refresh {\"match1\":4,\"match2\":5,\"navigations\":[0,0,0,0]}\n"
+                    },
+                    {
+                      "text": "PASS: Standings update in all four sessions and match an independent completed-results oracle {\"teams\":16}\n"
+                    },
+                    {
+                      "text": "PASS: Backend rejects public viewer writes and scorekeeper administrative/legacy bypasses {}\n"
+                    },
+                    {
+                      "text": "PASS: Stale editor is rejected with HTTP 409 and recovers by loading the latest result {}\n"
+                    },
+                    {
+                      "text": "PASS: Truly concurrent same-version requests produce exactly one winner {\"statuses\":[200,409]}\n"
+                    },
+                    {
+                      "text": "PASS: All browser reloads preserve database results and independent sessions {}\n"
+                    },
+                    {
+                      "text": "PASS: Mobile layout fits 390px and Hebrew switch applies RTL {}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-19T15:18:50.644Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e3d0d810512a15c692fe-3cdeff1701f35dede974",
+          "file": "multiuser.spec.cjs",
+          "line": 12,
+          "column": 1
+        },
+        {
+          "title": "upstream fixture engine, qualification, tiebreaks, progression, corrections and reset",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8796,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-19T15:19:14.936Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e3d0d810512a15c692fe-1357fcc93aa18d889663",
+          "file": "multiuser.spec.cjs",
+          "line": 57,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-19T15:18:49.523Z",
+    "duration": 34596.805,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

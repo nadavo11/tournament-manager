@@ -123,7 +123,8 @@ async def sql_set_input_ids_for_match(
 ) -> None:
     query = """
         UPDATE matches
-        SET stage_item_input1_id = :input1_id,
+        SET live_version = live_version + CASE WHEN stage_item_input1_id IS DISTINCT FROM :input1_id OR stage_item_input2_id IS DISTINCT FROM :input2_id THEN 1 ELSE 0 END,
+            stage_item_input1_id = :input1_id,
             stage_item_input2_id = :input2_id
         WHERE round_id = :round_id
         AND matches.id = :match_id

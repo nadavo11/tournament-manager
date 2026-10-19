@@ -29,6 +29,7 @@ dependencies = [
     "types-aiofiles==25.1.0.20251011",
     "types-passlib==1.7.7.20241221",
     "types-simplejson==4.1.0.20260724",
+    "tzdata>=2026.5",
     "uvicorn==0.53.0",
 ]
 

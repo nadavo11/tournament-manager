@@ -1,0 +1,73 @@
+{
+  "baseURL": "https://myth-premiere-outstanding-documented.trycloudflare.com",
+  "recordedAt": "2026-10-19T15:19:14.904Z",
+  "checks": [
+    {
+      "step": "Four isolated browser contexts authenticated independently",
+      "passed": true,
+      "at": "2026-10-19T15:19:01.519Z",
+      "details": {
+        "identities": [
+          "Administrator · Organizer",
+          "Scorekeeper A · Scorekeeper",
+          "Scorekeeper B · Scorekeeper",
+          "Public viewer · Read only"
+        ]
+      }
+    },
+    {
+      "step": "Simultaneous writes to different matches appear in all sessions without refresh",
+      "passed": true,
+      "at": "2026-10-19T15:19:05.866Z",
+      "details": {
+        "match1": 4,
+        "match2": 5,
+        "navigations": [
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "step": "Standings update in all four sessions and match an independent completed-results oracle",
+      "passed": true,
+      "at": "2026-10-19T15:19:08.346Z",
+      "details": {
+        "teams": 16
+      }
+    },
+    {
+      "step": "Backend rejects public viewer writes and scorekeeper administrative/legacy bypasses",
+      "passed": true,
+      "at": "2026-10-19T15:19:08.645Z"
+    },
+    {
+      "step": "Stale editor is rejected with HTTP 409 and recovers by loading the latest result",
+      "passed": true,
+      "at": "2026-10-19T15:19:10.027Z"
+    },
+    {
+      "step": "Truly concurrent same-version requests produce exactly one winner",
+      "passed": true,
+      "at": "2026-10-19T15:19:10.378Z",
+      "details": {
+        "statuses": [
+          200,
+          409
+        ]
+      }
+    },
+    {
+      "step": "All browser reloads preserve database results and independent sessions",
+      "passed": true,
+      "at": "2026-10-19T15:19:12.141Z"
+    },
+    {
+      "step": "Mobile layout fits 390px and Hebrew switch applies RTL",
+      "passed": true,
+      "at": "2026-10-19T15:19:13.523Z"
+    }
+  ]
+}

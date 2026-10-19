@@ -1,0 +1,11 @@
+.git
+.local
+.runtime
+backend/.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/test-results
+**/evidence/report
+**/*.env
+**/*.log

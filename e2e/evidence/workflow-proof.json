@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": [
+    "16 teams / 4 groups / 24 unique round-robin fixtures",
+    "Incomplete groups cannot qualify",
+    "8-team knockout seeded through Bracket",
+    "Quarterfinals, semifinals and final progress automatically",
+    "Tied knockout rejected without explicit winner",
+    "Explicit tiebreak winners advance",
+    "Group corrections locked after qualification",
+    "Upstream correction blocked once later round started",
+    "Reset restores 24 seeded group matches"
+  ],
+  "at": "2026-10-19T15:19:23.566Z"
+}

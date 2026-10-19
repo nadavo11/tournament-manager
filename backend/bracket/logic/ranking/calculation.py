@@ -25,6 +25,10 @@ def set_statistics_for_stage_item_input(
 ) -> None:
     is_team1 = team_index == 0
     team_score = match.stage_item_input1_score if is_team1 else match.stage_item_input2_score
+    stats[stage_item_input_id].goals_for += team_score
+    stats[stage_item_input_id].goals_against += (
+        match.stage_item_input2_score if is_team1 else match.stage_item_input1_score
+    )
     was_draw = match.stage_item_input1_score == match.stage_item_input2_score
     has_won = not was_draw and team_score == max(
         match.stage_item_input1_score, match.stage_item_input2_score
@@ -65,6 +69,8 @@ def determine_ranking_for_stage_item(
     ranking: Ranking,
 ) -> defaultdict[StageItemInputId, TeamStatistics]:
     input_x_stats: defaultdict[StageItemInputId, TeamStatistics] = defaultdict(TeamStatistics)
+    for input_ in stage_item.inputs:
+        input_x_stats[input_.id]  # Include teams that have not played yet.
 
     if stage_item.type is StageType.SWISS:
         for input_ in stage_item.inputs:
@@ -75,7 +81,7 @@ def determine_ranking_for_stage_item(
         for round_ in stage_item.rounds
         if not round_.is_draft
         for match in round_.matches
-        if isinstance(match, MatchWithDetailsDefinitive)
+        if isinstance(match, MatchWithDetailsDefinitive) and match.live_status == "COMPLETED"
     ]
     for match in matches:
         for team_index, stage_item_input in enumerate(match.stage_item_inputs):
@@ -96,7 +102,10 @@ def determine_team_ranking_for_stage_item(
     ranking: Ranking,
 ) -> list[tuple[StageItemInputId, TeamStatistics]]:
     team_ranking = determine_ranking_for_stage_item(stage_item, ranking)
-    return sorted(team_ranking.items(), key=lambda x: x[1].points, reverse=True)
+    return sorted(
+        team_ranking.items(),
+        key=lambda x: (-x[1].points, -(x[1].goals_for - x[1].goals_against), -x[1].goals_for, x[0]),
+    )
 
 
 async def recalculate_ranking_for_stage_item(

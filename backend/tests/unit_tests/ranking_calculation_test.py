@@ -114,8 +114,12 @@ def test_determine_ranking_for_stage_item_elimination() -> None:
     )
 
     assert ranking == {
-        -2: TeamStatistics(wins=0, draws=1, losses=1, points=Decimal("1.25")),
-        -1: TeamStatistics(wins=1, draws=1, losses=0, points=Decimal("4.75")),
+        -2: TeamStatistics(
+            goals_for=2, goals_against=4, wins=0, draws=1, losses=1, points=Decimal("1.25")
+        ),
+        -1: TeamStatistics(
+            goals_for=4, goals_against=2, wins=1, draws=1, losses=0, points=Decimal("4.75")
+        ),
     }
 
 
@@ -210,8 +214,12 @@ def test_determine_ranking_for_stage_item_swiss() -> None:
     )
 
     assert ranking == {
-        -2: TeamStatistics(wins=0, draws=1, losses=1, points=Decimal("1208")),
-        -1: TeamStatistics(wins=1, draws=1, losses=0, points=Decimal("1320")),
+        -2: TeamStatistics(
+            goals_for=2, goals_against=4, wins=0, draws=1, losses=1, points=Decimal("1208")
+        ),
+        -1: TeamStatistics(
+            goals_for=4, goals_against=2, wins=1, draws=1, losses=0, points=Decimal("1320")
+        ),
     }
 
 

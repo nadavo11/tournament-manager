@@ -36,6 +36,7 @@ from bracket.utils.alembic import alembic_run_migrations
 from bracket.utils.asyncio import AsyncioTasksManager
 from bracket.utils.db_init import init_db_when_empty
 from bracket.utils.logging import logger
+from bracket.live import router as live_router, legacy_write_guard
 
 init_sentry()
 
@@ -129,6 +130,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.middleware("http")(legacy_write_guard)
+app.include_router(live_router, tags=["Live scoring"])
+app.mount("/live-assets", StaticFiles(directory="live-ui"), name="live-assets")
+
+
+@app.get("/", include_in_schema=False)
+async def live_home() -> FileResponse:
+    return FileResponse("live-ui/index.html", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/source.zip", include_in_schema=False)
+async def running_source() -> FileResponse:
+    return FileResponse("source.zip", filename="bracket-live-source.zip")
 
 
 @app.middleware("http")

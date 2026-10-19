@@ -112,6 +112,9 @@ matches = Table(
     "matches",
     metadata,
     Column("id", BigInteger, primary_key=True, index=True),
+    Column("live_status", String, nullable=False, server_default="COMPLETED"),
+    Column("live_version", Integer, nullable=False, server_default="0"),
+    Column("tiebreak_winner", Integer, nullable=True),
     Column("created", DateTimeTZ, nullable=False, server_default=func.now()),
     Column("start_time", DateTimeTZ, nullable=True),
     Column("duration_minutes", Integer, nullable=True),
@@ -237,4 +240,31 @@ rankings = Table(
     Column("draw_points", Float, nullable=False),
     Column("loss_points", Float, nullable=False),
     Column("add_score_points", Boolean, nullable=False),
+)
+
+live_tournaments = Table(
+    "live_tournaments",
+    metadata,
+    Column("id", BigInteger, ForeignKey("tournaments.id", ondelete="CASCADE"), primary_key=True),
+    Column("revision", Integer, nullable=False, server_default="0"),
+    Column("qualify", Integer, nullable=False, server_default="2"),
+    Column("knockout_started", Boolean, nullable=False, server_default="false"),
+)
+
+live_audit = Table(
+    "live_audit",
+    metadata,
+    Column("id", BigInteger, primary_key=True),
+    Column(
+        "tournament_id",
+        BigInteger,
+        ForeignKey("tournaments.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+    Column("match_id", BigInteger, nullable=True),
+    Column("actor", String, nullable=False),
+    Column("before", Text, nullable=False),
+    Column("after", Text, nullable=False),
+    Column("created", DateTimeTZ, nullable=False, server_default=func.now()),
 )

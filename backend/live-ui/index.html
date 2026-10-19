@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#102b25" />
+    <title>Bracket Live · Tournament workspace</title>
+    <link rel="stylesheet" href="/live-assets/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">bracket<span>live</span><i>●</i></a>
+      <div class="header-right">
+        <span id="connection" role="status">Connecting…</span
+        ><button id="language">עברית</button><button id="auth">Sign in</button>
+      </div>
+    </header>
+    <main>
+      <div class="eyebrow">
+        THE TOURNAMENT WORKSPACE <span>2026 SEASON</span>
+      </div>
+      <section class="hero">
+        <div>
+          <div class="kicker" id="event-label">COMMUNITY CUP / LIVE EVENT</div>
+          <h1 id="title">The game is on.</h1>
+          <p id="subtitle">Every result. Every team. One shared tournament.</p>
+        </div>
+        <div class="hero-mark" aria-hidden="true">✳</div>
+      </section>
+      <div class="toolbar">
+        <label
+          ><span id="tournament-label">Tournament</span
+          ><select id="tournaments" aria-label="Tournament"></select
+        ></label>
+        <div id="identity">Public viewer · Read only</div>
+        <button id="new" hidden>＋ New tournament</button>
+      </div>
+      <section class="stats" id="stats"></section>
+      <div class="workspace">
+        <div>
+          <nav id="tabs" aria-label="Tournament views"></nav>
+          <div id="content" aria-live="polite"></div>
+        </div>
+        <aside>
+          <div class="aside-title">
+            <h2 id="feed-title">The latest</h2>
+            <span class="live-dot">● LIVE</span>
+          </div>
+          <p class="muted" id="feed-sub">Shared results, as they happen.</p>
+          <div id="feed"></div>
+          <div class="rules">
+            <span>TOURNAMENT NOTES</span>
+            <p id="rules"></p>
+            <p id="seed-rule">
+              Top 2 advance. Cross-group quarterfinals: A1–B2, C1–D2, B1–A2,
+              D1–C2.
+            </p>
+          </div>
+          <div id="admin" hidden>
+            <h3>Organizer tools</h3>
+            <button id="qualify">Generate knockout →</button
+            ><button id="reshuffle">Reshuffle unplayed groups</button
+            ><button id="invite">Add scorekeeper / organizer</button
+            ><button id="reset" class="danger">Reset demonstration</button>
+          </div>
+        </aside>
+      </div>
+      <footer>
+        <span
+          >Built on <a href="https://github.com/evroon/bracket">Bracket</a> by
+          Erik Vroon & contributors · AGPL-3.0</span
+        ><a href="/source.zip">Download running source</a
+        ><span>Play together. Stay in sync.</span>
+      </footer>
+    </main>
+    <div id="toast" role="status" hidden></div>
+    <dialog id="dialog">
+      <button class="close" aria-label="Close dialog">×</button>
+      <div id="modal"></div>
+    </dialog>
+    <script src="/live-assets/app.js" defer></script>
+  </body>
+</html>
