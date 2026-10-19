@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime
 
 import sqlalchemy
 from databases import Database
@@ -8,8 +9,9 @@ from bracket.config import config
 
 
 def datetime_decoder(value: str) -> datetime_utc:
-    value = value.split(".")[0].replace("+00", "+00:00")
-    return datetime_utc.fromisoformat(value)
+    # Keep both fractional seconds and the server's UTC offset. Dropping the fraction
+    # also dropped its following offset and shifted audit times on non-UTC hosts.
+    return datetime_utc.from_datetime(datetime.fromisoformat(value))
 
 
 async def asyncpg_init(connection: Any) -> None:

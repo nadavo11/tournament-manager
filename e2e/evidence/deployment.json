@@ -9,7 +9,7 @@
     "failed": 0
   },
   "upstream_unit_tests": {
-    "passed": 4,
+    "passed": 7,
     "failed": 0
   },
   "initial_tournament": {
@@ -22,5 +22,5 @@
     "pending_group_matches": 12
   },
   "external_verification": "https://github.com/nadavo11/tournament-manager/actions/runs/39277564320",
-  "recorded_at": "2026-10-19T15:26:43.013761+00:00"
+  "recorded_at": "2026-10-19T15:30:48.344200+00:00"
 }

@@ -219,6 +219,9 @@ h1 {
   grid-template-columns: minmax(0, 1fr) 275px;
   gap: 30px;
 }
+.workspace > div {
+  min-width: 0;
+}
 nav {
   display: flex;
   gap: 22px;
