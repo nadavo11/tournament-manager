@@ -1,0 +1,43 @@
+{
+  "id": 39277564320,
+  "html_url": "https://github.com/nadavo11/tournament-manager/actions/runs/39277564320",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-10-19T15:23:47Z",
+  "updated_at": "2026-10-19T15:23:56Z",
+  "head_sha": "2cd573ce9d7a95513e527380ac68967f34830627",
+  "client": "Independent GitHub-hosted ubuntu-latest",
+  "jobs": [
+    {
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-19T15:23:51Z",
+          "completed_at": "2026-10-19T15:23:51Z"
+        },
+        {
+          "name": "Fetch the real application from an independent GitHub-hosted client",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-19T15:23:51Z",
+          "completed_at": "2026-10-19T15:23:54Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-19T15:23:54Z",
+          "completed_at": "2026-10-19T15:23:54Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "url": "https://myth-premiere-outstanding-documented.trycloudflare.com",
+  "source": "https://github.com/nadavo11/tournament-manager",
+  "hosting": "Temporary Cloudflare HTTPS tunnel to Windows host",
+  "persistence": "PostgreSQL 17 in ../.runtime/pgdata",
+  "cost": "No subscription or paid API; existing host electricity/network only",
+  "browser_tests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "upstream_unit_tests": {
+    "passed": 4,
+    "failed": 0
+  },
+  "initial_tournament": {
+    "teams": 16,
+    "groups": 4,
+    "group_matches": 24,
+    "knockout_matches": 7,
+    "completed_group_matches": 8,
+    "live_group_matches": 4,
+    "pending_group_matches": 12
+  },
+  "external_verification": "https://github.com/nadavo11/tournament-manager/actions/runs/39277564320",
+  "recorded_at": "2026-10-19T15:26:43.013761+00:00"
+}

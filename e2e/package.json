@@ -1,14 +1,14 @@
 {
-  "name": "e2e",
+  "name": "bracket-live-e2e",
   "version": "1.0.0",
-  "description": "",
+  "description": "Independent multi-user browser proof for Bracket Live",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "@playwright/test": "^1.64.1",
     "prettier": "^3.9.10"

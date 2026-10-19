@@ -103,6 +103,7 @@ test("four independent sessions synchronize scores, standings, conflicts, permis
     );
     const initial = (await request(admin, `/live/tournaments/${tid}`)).data;
     const [m1, m2] = flat(initial).filter((m) => m.live_status === "PENDING");
+      await Promise.all(pages.map(p=>p.waitForFunction(revision=>state?.tournament.revision===revision,initial.tournament.revision)));
     const navigations = pages.map(() => 0);
     pages.forEach((p, i) =>
       p.on("framenavigated", (f) => {

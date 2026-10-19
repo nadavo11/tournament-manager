@@ -13,7 +13,7 @@ with ZipFile(target,'w',ZIP_DEFLATED) as z:
         p=Path(name)
         if any(part in {'.git','.local','.venv','node_modules','test-results','report','video'} for part in p.parts):
             continue
-        if p.suffix in {'.env','.log','.zip'} or p.name=='demo-accounts.json':
+        if p.suffix in {'.env','.log','.zip','.webm'} or p.name=='demo-accounts.json':
             continue
         f=root/p
         if f.is_file():
