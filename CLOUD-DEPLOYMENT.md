@@ -2,11 +2,13 @@
 
 The PC/tunnel deployment is a temporary demo and is unsuitable as the tournament's production host. Do not describe it as tournament-ready. This configuration preserves the existing FastAPI/Bracket engine, PostgreSQL schema, users, passwords, rosters, tournaments and scoring logic.
 
-## Proposed resources and approval
+## Free weekend deployment
 
-`render.yaml` defines a paid always-on Starter web service and a paid small PostgreSQL instance in Frankfurt, with 1 GB database storage. Render provisions HTTPS, restarts unhealthy instances, and provides point-in-time recovery for paid PostgreSQL. The small configuration is approximately $13/month before storage, bandwidth overages and taxes; confirm the current checkout total before provisioning. It is a single-instance starting configuration, not a high-availability guarantee. Event capacity still requires a representative load test after deployment. Free services that sleep or have expiring databases are not the proposed event host.
+The owner requires a free tier and clarified that the app is needed only for the weekend. `render.yaml` now explicitly selects **Free** for both the web service and PostgreSQL, in Frankfurt. It needs one Render account. There are no paid resources in this Blueprint. Keep a free workspace and do not add a payment method or accept a paid upgrade without new explicit authorization.
 
-The original request forbids introducing billing without approval. No cloud resources have been provisioned and no charges have been authorized. No Render credentials or authenticated deployment session are available in this workspace. Required next action: owner approval of hosting charges and access to the owner's Render account. Never ask for passwords or tokens in chat.
+Render's free backend sleeps after 15 minutes without incoming traffic and takes about a minute to wake. Normal live-view polling generates incoming requests while participants actually use the app; do not add artificial keep-alive traffic. Open and verify the site before the first game and after long breaks. PostgreSQL has 1 GB of persistent storage and expires 30 days after creation. Export the final database/results immediately after the weekend. Free PostgreSQL has no provider-managed recovery backups; use explicit logical exports. Free-tier usage quotas can suspend service, so review the account's remaining hours/bandwidth and test representative concurrent use before the event. Render explicitly does not recommend its free tier for production; this is a limited-duration, best-effort choice under the owner's $0 constraint, not a reliability guarantee.
+
+No cloud resources have been provisioned. Hosting account access is the only required user step currently missing. Sign in to Render with GitHub using [the prepared free deployment](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fnadavo11%2Ftournament-manager%2Ftree%2Fcodex%2Flive-tournament). Never ask for passwords or tokens in chat.
 
 ## Prepared deployment
 
@@ -16,11 +18,11 @@ The original request forbids introducing billing without approval. No cloud reso
 - The container binds to `0.0.0.0` and the provider's `PORT`. It includes the corresponding AGPL source archive.
 - Render injects the internal database connection and a generated JWT secret. No local environment files or PC tunnels are used. Existing passwords migrate with database hashes; existing sessions will need a fresh login.
 - Health check `/health/ready` queries PostgreSQL. Auto-deploy is disabled to avoid unplanned releases during a tournament.
-- The pre-deploy check deliberately refuses to launch against an empty database or one missing tournaments 1/8 and the three admin accounts. Restore first, then deploy. Do not bootstrap an unrelated empty demo and switch traffic to it.
+- The entrypoint check deliberately refuses to launch against an empty database or one missing tournaments 1/8 and the three admin accounts. It runs at startup because the free tier does not support a separate pre-deploy command. Restore first, then deploy. Do not bootstrap an unrelated empty demo and switch traffic to it.
 
 ## Migration and verification sequence
 
-1. Approve the provider's actual price, connect its GitHub integration, and provision the Blueprint. The first app deployment is expected to stop at preflight until data is restored. Keep public traffic on the existing site until verification passes.
+1. Sign in to Render, connect GitHub and review the Blueprint: both resources must say **Free / $0**. Provision only free resources. The first app deployment is expected to stop at startup preflight until data is restored. Keep public traffic on the existing site until verification passes. If signup requests a paid plan, card, or an unavailable free database, pause and report that actual blocker instead of accepting charges.
 2. Agree a brief scoring freeze for cutover. Stop writes to the old backend, then export a new consistent snapshot. The prepared archive is a rehearsal and must be refreshed if scores have changed.
 3. Run `backend/.venv/Scripts/python.exe tools/cloud_database.py export --archive .local/backups/NEW-UNIQUE-NAME.dump`. The source connection comes from private `.local/runtime.env`. The export and row-count manifest share the same PostgreSQL transaction snapshot. The private archive contains password hashes and must not be committed or uploaded to a public repository.
 4. Temporarily allow only the migration operator's public IP in the managed database firewall. Obtain its external TLS database URL through the provider's secure environment workflow; set `CLOUD_PG_DSN` in the process environment or ignored `.local/cloud.env`.
@@ -28,7 +30,7 @@ The original request forbids introducing billing without approval. No cloud reso
 6. Deploy the app. Preflight checks migrated records; startup applies pending migrations. Confirm database-backed readiness and corresponding source download.
 7. Verify all three administrators, two independent scorekeepers, read-only viewer permissions, concurrent scoring, player stats, undo, conflict handling and standings through the managed URL. Use isolated test tournaments and remove only those fixtures.
 8. Update the GitHub Pages API origin to the verified stable managed URL and publish. Keep the existing `streetball4biber` share URL. Test the published site and then stop the PC backend/tunnel. Repeat login and live synchronization from an external client with those PC services stopped. This is the required proof that the migration removes the PC dependency.
-9. Confirm provider backups/recovery window, make a fresh logical backup, rehearse recovery, and run a representative multi-device load test before calling the event deployment ready. Record the actual managed URL and test results here.
+9. Make a fresh logical backup, verify its restore, and run a representative multi-device load test before the event. Record the actual managed URL, database expiration date and test results here. Export the completed tournament immediately after the weekend, well before the 30-day database expiration. An export file may be kept on a personal computer without making the live app depend on that computer.
 
 Do not reopen writes on both databases after cutover: that would split scores across two sources. A rollback after new cloud writes requires exporting those writes; switching the frontend back to the old snapshot would lose them.
 

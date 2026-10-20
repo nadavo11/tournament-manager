@@ -4,7 +4,7 @@ A functional multi-user scoring workspace built on [evroon/bracket](https://gith
 
 ## Current demonstration
 
-The PC/tunnel deployment below is a temporary demonstration, not the production tournament host. A managed backend/database deployment and verified migration tools are prepared in [CLOUD-DEPLOYMENT.md](CLOUD-DEPLOYMENT.md). Cloud provisioning remains pending hosting-account access and the owner's approval of recurring charges.
+The PC/tunnel deployment below is a temporary demonstration. A free Render backend/database deployment and verified migration tools are prepared in [CLOUD-DEPLOYMENT.md](CLOUD-DEPLOYMENT.md) for the owner's weekend-only event. Cloud provisioning remains pending hosting-account access. No paid resources are authorized or configured. The free database expires after 30 days, so final results must be exported after the event.
 
 Public frontend: https://nadavo11.github.io/streetball4biber/
 

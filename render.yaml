@@ -1,4 +1,4 @@
-# Paid resources: provision only after the owner approves hosting charges.
+# Weekend-only free tier. PostgreSQL expires 30 days after creation.
 services:
   - type: web
     name: streetball4biber
@@ -6,11 +6,10 @@ services:
     repo: https://github.com/nadavo11/tournament-manager
     branch: codex/live-tournament
     region: frankfurt
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile.cloud
     dockerContext: .
     autoDeployTrigger: "off"
-    preDeployCommand: /app/.venv/bin/python cloud_preflight.py
     healthCheckPath: /health/ready
     envVars:
       - key: PG_DSN
@@ -38,8 +37,7 @@ services:
 databases:
   - name: streetball4biber-db
     region: frankfurt
-    plan: 0.1c-256mb
-    diskSizeGB: 1
+    plan: free
     postgresMajorVersion: "17"
     databaseName: streetball4biber
     user: streetball4biber
