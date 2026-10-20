@@ -4,7 +4,7 @@ A functional multi-user scoring workspace built on [evroon/bracket](https://gith
 
 ## Current demonstration
 
-Public HTTPS: https://myth-premiere-outstanding-documented.trycloudflare.com
+Public HTTPS: https://pretty-oriental-swap-priest.trycloudflare.com
 
 Source: https://github.com/nadavo11/tournament-manager/tree/codex/live-tournament
 
@@ -42,7 +42,7 @@ Added: versioned match updates, explicit PENDING/LIVE/COMPLETED state, penalty/o
 
 The running service uses Python 3.13, the upstream locked dependencies plus Windows timezone data, FastAPI/Uvicorn on 127.0.0.1:8400, and PostgreSQL 17 on 127.0.0.1:55432. PostgreSQL data lives in `../.runtime/pgdata`, outside the source checkout. Runtime secrets are in `.local/runtime.env`; never commit them or copy them into public reports. PostgreSQL uses SCRAM password authentication. The `.local` directory is restricted to the current Windows user. The public endpoint provides `/source.zip`, containing corresponding source without secrets, database data, or dependencies.
 
-To restart this prepared Windows environment, run `./start-live.ps1`. Logs: `.local/server.log`, `.local/server-error.log`, and `../.runtime/tunnel-error.log`. This script uses the already prepared binaries and data directory; it is not a fresh-machine installer. No startup task was installed.
+To restart this prepared Windows environment, run `./start-live.ps1`. If the public hostname returns NXDOMAIN or cloudflared logs “Tunnel not found” while still running, use `./start-live.ps1 -RenewTunnel`; this replaces only this app’s tunnel and issues a new public address. An expired Quick Tunnel address cannot be recovered by Windows DNS diagnostics. The current restored address is also saved privately in `.local/active-url.txt`. Logs: `.local/server.log`, `.local/server-error.log`, and `../.runtime/tunnel-error.log`. This script uses the already prepared binaries and data directory; it is not a fresh-machine installer. No startup task was installed.
 
 For another machine, create a private `.local/runtime.env` containing random `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PG_DSN`, `ENVIRONMENT=PRODUCTION`, `API_PREFIX=/api`, `SERVE_FRONTEND=false`, `ALLOW_USER_REGISTRATION=false`, `ALLOW_DEMO_USER_REGISTRATION=false`, and the HTTPS `CORS_ORIGINS`. Install Python 3.13 and uv, then `cd backend; uv sync --locked --no-dev`, create `static`, and start `uv run uvicorn bracket.app:app --host 127.0.0.1 --port 8400`. Empty databases initialize from schema metadata and stamp Alembic head; existing databases apply `live_scoring_v1`. Run `uv run python seed_live.py` once. Production should use a stable HTTPS reverse proxy and a backed-up database.
 

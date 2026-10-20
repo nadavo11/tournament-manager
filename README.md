@@ -1,6 +1,6 @@
 # Bracket Live — shared tournament workspace
 
-[Open the live demo](https://myth-premiere-outstanding-documented.trycloudflare.com) · [Setup, architecture and demonstration guide](LIVE-README.md) · [Actual test evidence](e2e/evidence) · [Independent external verification](https://github.com/nadavo11/tournament-manager/actions/runs/39277564320)
+[Open the live demo](https://pretty-oriental-swap-priest.trycloudflare.com) · [Setup, architecture and demonstration guide](LIVE-README.md) · [Actual test evidence](e2e/evidence) · [Independent external verification](https://github.com/nadavo11/tournament-manager/actions/runs/39277564320)
 
 This fork adds independent organizer and scorekeeper accounts, persistent live scores, standings, version conflicts, audit history, seeded group and knockout fixtures, and a mobile English/Hebrew interface to Bracket. Demo credentials are supplied privately on the host, never committed. Public viewers do not need an account.
 

@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Fetch the real application from an independent GitHub-hosted client
         env:
-          DEMO_URL: ${{ inputs.url || 'https://myth-premiere-outstanding-documented.trycloudflare.com' }}
+          DEMO_URL: ${{ inputs.url || 'https://pretty-oriental-swap-priest.trycloudflare.com' }}
         run: |
           python - <<'PY'
           import os,json,urllib.request,datetime
