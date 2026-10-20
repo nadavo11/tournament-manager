@@ -2,13 +2,17 @@
   "passed": true,
   "url": "https://nadavo11.github.io/streetball4biber/",
   "backend": "https://streetball4biber.onrender.com",
-  "checkedAt": "2026-10-20T21:19:41.023Z",
+  "checkedAt": "2026-10-20T21:39:44.058Z",
   "checks": [
     "admin3 login and organizer permissions",
     "red dark theme",
     "four groups, seven knockout nodes, fifteen actual dependency edges",
     "viewer has no diagram editing controls",
     "UI score write updates viewer diagram points without navigation",
+    "live group score displayed before game is finished",
+    "provisional qualifying teams shown with explicit progress",
+    "organizer confirms qualification directly in diagram",
+    "quarterfinal, semifinal and final winners propagate to champion",
     "390px layout and fit/100% controls",
     "Hebrew RTL diagram"
   ]

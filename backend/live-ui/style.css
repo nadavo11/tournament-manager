@@ -859,6 +859,60 @@ nav {
 .diagram-help {
   line-height: 1.6;
 }
+.diagram-status {
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.diagram-status p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+.diagram-status button {
+  margin-top: 10px;
+}
+.diagram-group-progress {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+  color: #c0a7b2;
+}
+.diagram-group-score {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1px 6px;
+  width: 100%;
+  min-height: 30px;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: start;
+  font-size: 9px;
+}
+.diagram-group-score span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.diagram-group-score small {
+  color: #f78ca4;
+  font-size: 8px;
+}
+.diagram-group-score b {
+  grid-row: span 2;
+  align-self: center;
+  color: var(--ink);
+}
+.diagram-team.provisional span {
+  color: #d7bdc8;
+  font-style: italic;
+}
 .diagram-scroll {
   overflow: auto;
   max-width: 100%;

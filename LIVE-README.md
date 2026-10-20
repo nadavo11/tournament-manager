@@ -71,6 +71,8 @@ Run the named-site UI and synchronization check from `e2e` with `npx playwright 
 
 ## Basketball Live Court
 
+The diagram now shows finished/total group-game progress, current live group scores (or the latest finished result), and provisional qualifying team names based on completed-game standings. Live points do not alter official rankings until **Finish game** is confirmed. Provisional names are explicitly labelled and do not modify persisted bracket participants. When all group games are finished, an organizer can **Confirm qualifiers & start knockout** directly in Diagram. Actual finished knockout games then advance winners through the original Bracket engine. The diagram browser test covers this entire flow through the champion, alongside mobile/RTL and independent-viewer updates. No existing tournament is advanced or finalized as part of UI changes.
+
 Open **Live Court** or a match's Live Court button. Share `?t=TOURNAMENT_ID&view=live&match=MATCH_ID` to open a particular scoreboard directly. Signed-out visitors see the same live score, clock, play log and optional player dashboards without mutation controls.
 
 **Quick score** is the default: large team buttons for two points, three points, and a one-point free throw; team fouls, timeouts, possession, undo and an optional shared clock. **Game setup** before the first play supports conventional 2/3 scoring or streetball 1/2 scoring, with free throws worth one point in both. Configure one period, two halves or four quarters and their duration. A timeout pauses the clock. Scorekeepers explicitly control clock start/pause, remaining time, periods and finishing the game; no automatic win-at-21, bonus free throws or rule-specific penalties are assumed.

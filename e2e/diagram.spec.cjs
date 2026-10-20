@@ -97,6 +97,66 @@ test("named Streetball4Biber site: admin3, dark theme, diagram and live scoring"
         .first()
         .locator("b"),
     ).toHaveText("3");
+    // Live group scores must be visible even though standings count only finished games.
+    const snapshot = async () =>
+      (await api.request.get(setupAPI + `/api/live/tournaments/${tid}`)).json();
+    const write = async (m, home, away, status) => {
+      const response = await api.request.put(
+        setupAPI + `/api/live/tournaments/${tid}/matches/${m.id}`,
+        {
+          headers,
+          data: { version: m.live_version, home, away, status },
+        },
+      );
+      expect(response.status(), await response.text()).toBe(200);
+    };
+    let current = await snapshot();
+    const other = current.stages[0].stage_items[0].rounds
+      .flatMap((r) => r.matches)
+      .find((m) => m.id !== match.id);
+    await write(other, 11, 7, "LIVE");
+    await expect(
+      viewer.locator(`[data-open-court="${other.id}"].diagram-group-score b`),
+    ).toHaveText("11–7");
+    await expect(viewer.locator(".diagram-status")).toContainText("1/24");
+    await expect(viewer.locator(".diagram-team.provisional")).toHaveCount(8);
+    current = await snapshot();
+    for (const g of current.stages[0].stage_items) {
+      for (const m of g.rounds.flatMap((r) => r.matches)) {
+        if (m.live_status !== "COMPLETED") await write(m, 6, 2, "COMPLETED");
+      }
+    }
+    await expect(viewer.locator(".diagram-status")).toContainText("24/24");
+    await admin.locator("[data-tab=Diagram]").click();
+    await expect(admin.locator("#diagram-qualify")).toBeVisible();
+    await admin.locator("#diagram-qualify").click();
+    await expect(viewer.locator(".diagram-status")).toContainText(
+      "Qualifiers confirmed",
+    );
+    await expect(viewer.locator(".diagram-team.provisional")).toHaveCount(0);
+    current = await snapshot();
+    let knockout = current.stages
+      .flatMap((s) => s.stage_items)
+      .find((i) => i.type === "SINGLE_ELIMINATION");
+    const roundIds = knockout.rounds.map((r) => r.id);
+    let expectedChampion;
+    for (const roundId of roundIds) {
+      current = await snapshot();
+      knockout = current.stages
+        .flatMap((s) => s.stage_items)
+        .find((i) => i.type === "SINGLE_ELIMINATION");
+      const round = knockout.rounds.find((r) => r.id === roundId);
+      for (const m of round.matches) {
+        expectedChampion = m.stage_item_input1.team.name;
+        await write(m, 20, 10, "COMPLETED");
+        await expect(
+          viewer.locator(`[data-diagram-match="${m.id}"] .winner`),
+        ).toContainText(expectedChampion);
+      }
+    }
+    await expect(viewer.locator(".diagram-champion strong")).toHaveText(
+      expectedChampion,
+    );
     expect(navigations).toBe(0);
     await viewer.setViewportSize({ width: 390, height: 844 });
     expect(
@@ -132,6 +192,10 @@ test("named Streetball4Biber site: admin3, dark theme, diagram and live scoring"
             "four groups, seven knockout nodes, fifteen actual dependency edges",
             "viewer has no diagram editing controls",
             "UI score write updates viewer diagram points without navigation",
+            "live group score displayed before game is finished",
+            "provisional qualifying teams shown with explicit progress",
+            "organizer confirms qualification directly in diagram",
+            "quarterfinal, semifinal and final winners propagate to champion",
             "390px layout and fit/100% controls",
             "Hebrew RTL diagram",
           ],
