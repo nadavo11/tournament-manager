@@ -20,7 +20,22 @@ if ($RenewTunnel) {
 }
 if ($ownedTunnels.Count -eq 0) {
     Start-Process -FilePath $tunnelExe -ArgumentList 'tunnel','--url','http://127.0.0.1:8400','--protocol','http2','--edge-ip-version','4','--no-autoupdate' -RedirectStandardOutput (Join-Path $runtimeRoot 'tunnel.log') -RedirectStandardError (Join-Path $runtimeRoot 'tunnel-error.log') -WindowStyle Hidden
+    $newAddress = $null
+    for ($attempt = 0; $attempt -lt 40; $attempt++) {
+        $logText = Get-Content (Join-Path $runtimeRoot 'tunnel-error.log') -Raw -ErrorAction SilentlyContinue
+        if ($logText -match 'https://[a-z0-9-]+\.trycloudflare\.com') {
+            $newAddress = $Matches[0]
+            Set-Content -LiteralPath (Join-Path $privateRoot 'active-url.txt') -Value $newAddress
+            break
+        }
+        Start-Sleep -Milliseconds 500
+    }
+    if ($newAddress -and (Test-Path (Join-Path $privateRoot 'pages-checkout\.git'))) {
+        python (Join-Path $repoRoot 'tools\publish_frontend.py')
+        if ($LASTEXITCODE -ne 0) { throw 'Tunnel renewed; publishing its address to the named frontend failed.' }
+    }
 }
 Write-Output 'Local URL: http://127.0.0.1:8400'
 Write-Output "Public URL is recorded in $runtimeRoot\tunnel-error.log (may change after tunnel restart)."
 Write-Output 'If the temporary public address expires while cloudflared remains running, run ./start-live.ps1 -RenewTunnel to create a replacement address.'
+Write-Output 'Named frontend: https://nadavo11.github.io/streetball4biber/'

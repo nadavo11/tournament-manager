@@ -17,26 +17,32 @@ jobs:
     steps:
       - name: Fetch the real application from an independent GitHub-hosted client
         env:
-          DEMO_URL: ${{ inputs.url || 'https://pretty-oriental-swap-priest.trycloudflare.com' }}
+          DEMO_URL: ${{ inputs.url || 'https://nadavo11.github.io/streetball4biber' }}
         run: |
           python - <<'PY'
-          import os,json,urllib.request,datetime
+          import os,json,re,urllib.request,datetime,urllib.parse
           base=os.environ['DEMO_URL'].rstrip('/')
           assert base.startswith('https://')
-          def fetch(path):
-              with urllib.request.urlopen(base+path,timeout=30) as r:
+          def fetch(path,origin=None):
+              with urllib.request.urlopen((origin or base)+path,timeout=30) as r:
                   assert r.status==200
                   return r.read()
           html=fetch('/').decode()
-          assert 'Bracket Live' in html
-          tournaments=json.loads(fetch('/api/live/tournaments'))
+          assert 'Streetball4Biber' in html
+          api_base=base
+          config=re.search(r'src="(\./site-config\.js[^\"]*)"',html)
+          if config:
+              config_url=urllib.parse.urljoin(base+'/',config.group(1))
+              config_js=urllib.request.urlopen(config_url,timeout=30).read().decode()
+              api_base=json.loads(re.search(r'BIBER_API_ORIGIN\s*=\s*("[^"]*")',config_js).group(1)) or base
+          tournaments=json.loads(fetch('/api/live/tournaments',api_base))
           demo=next(t for t in tournaments if t['name']=='Community Cup 2026')
-          state=json.loads(fetch('/api/live/tournaments/'+str(demo['id'])))
+          state=json.loads(fetch('/api/live/tournaments/'+str(demo['id']),api_base))
           groups=state['stages'][0]['stage_items']
           matches=[m for g in groups for r in g['rounds'] for m in r['matches']]
           assert len(groups)==4 and sum(g['team_count'] for g in groups)==16 and len(matches)==24
           assert len(state['standings'])>=4
-          source=fetch('/source.zip')
+          source=fetch('/source.zip',api_base)
           assert source[:2]==b'PK'
-          print(json.dumps({'passed':True,'url':base,'client':'GitHub-hosted ubuntu-latest','checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'groups':len(groups),'teams':16,'matches':len(matches),'source_bytes':len(source)},indent=2))
+          print(json.dumps({'passed':True,'url':base,'backend':api_base,'client':'GitHub-hosted ubuntu-latest','checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'groups':len(groups),'teams':16,'matches':len(matches),'source_bytes':len(source)},indent=2))
           PY

@@ -1,16 +1,16 @@
-# Bracket Live tournament manager
+# Streetball4Biber tournament manager
 
 A functional multi-user scoring workspace built on [evroon/bracket](https://github.com/evroon/bracket), retaining its AGPL-3.0 license and attribution. The original frontend and backend remain in this repository. `backend/live-ui` is a focused mobile organizer interface served by the original FastAPI application.
 
 ## Current demonstration
 
-Public HTTPS: https://pretty-oriental-swap-priest.trycloudflare.com
+Public frontend: https://nadavo11.github.io/streetball4biber/
 
 Source: https://github.com/nadavo11/tournament-manager/tree/codex/live-tournament
 
-This is a temporary Cloudflare Quick Tunnel to the current Windows host. The computer, PostgreSQL, Python app, and cloudflared must remain running. Tunnel addresses can change on restart. There is no subscription or paid API; infrastructure costs are zero beyond the existing computer, electricity, and connection. It has no uptime guarantee and is not an unattended production hosting arrangement.
+The named frontend is published with GitHub Pages (https://github.com/nadavo11/streetball4biber) and uses the same authenticated FastAPI service and PostgreSQL data through a temporary Cloudflare Quick Tunnel to the current Windows host. The API origin is recorded privately in `.local/active-url.txt` and published in `site-config.js`; it contains no credentials. The computer, PostgreSQL, Python app, and cloudflared must remain running. Tunnel addresses can change on restart. There is no subscription or paid API; infrastructure costs are zero beyond the existing computer, electricity, and connection. It has no uptime guarantee and is not an unattended production hosting arrangement.
 
-Credentials are randomly generated, uncommitted, and stored only in the access-restricted `.local/demo-accounts.json` on the host. There are three separate authenticated identities: Administrator, Scorekeeper A, and Scorekeeper B. The fourth identity is the unauthenticated public read-only viewer. The bootstrap account also has a random password and no club access; upstream default credentials are not accepted. Registration and temporary demo-account creation are disabled.
+Credentials are randomly generated, uncommitted, and stored only in the access-restricted `.local/demo-accounts.json` on the host. The original identities Administrator, Scorekeeper A, and Scorekeeper B remain available. Additional organizer usernames were added at the user’s request; their credentials also remain private in the same local file. The fourth identity is the unauthenticated public read-only viewer. The bootstrap account also has a random password and no club access; upstream default credentials are not accepted. Registration and temporary demo-account creation are disabled.
 
 ## Three-phone demonstration
 
@@ -55,3 +55,14 @@ Run from `e2e`: `npm ci`, `npx playwright install chromium`, then set `DEMO_URL`
 `public-demo-proof.yml` independently fetches the deployed app, database-backed tournament snapshot, and corresponding source from a GitHub-hosted Ubuntu runner. Its successful run is required before claiming external reachability.
 
 Known limitations: temporary host/tunnel lifecycle; two-second polling instead of push; Hebrew translation covers navigation and key scoring labels but some supporting text remains English; no email invitation or password recovery service; no arbitrary ranking-rule editor or head-to-head tiebreak; groups cannot be reseeded after play without clearing results; no Docker verification on this host. Group/knockout correction locks deliberately require later results to be cleared or the tournament reset before changing already-progressed data.
+
+
+## Streetball4Biber frontend update
+
+The interface now uses a red dark palette, native dark form controls, and Streetball4Biber branding. The Diagram tab is built from the actual stages, standings, and `winner_from_match_id` relationships: groups → quarterfinals → semifinals → final → champion. It includes fit/100% controls, horizontal scrolling, live standings and score updates, Hebrew/RTL labels, and match edit links for authorized users. It does not calculate an independent bracket.
+
+The same frontend runs directly from FastAPI or from the named Pages address. Same-origin mode uses `site-config.js` with an empty API origin. `python tools/publish_frontend.py` publishes the frontend files, license, attribution and a public API origin to the separate `streetball4biber` repository. No credentials are included. Set `CORS_ORIGIN_REGEX=^https://nadavo11[.]github[.]io$` in the private runtime environment to allow the named frontend. Authentication still uses independent JWT sessions and all permissions remain enforced in FastAPI.
+
+`start-live.ps1 -RenewTunnel` now records the replacement API origin and republishes the named frontend configuration automatically when the Pages checkout exists. The shareable Pages URL remains unchanged, although its backend still depends on the local machine, network and tunnel. Allow Pages deployment to complete and reload after renewing the tunnel. This is not permanent cloud hosting of the database or API.
+
+Run the named-site UI and synchronization check from `e2e` with `npx playwright test diagram.spec.cjs`. It creates an isolated verification tournament, verifies the additional administrator, dark theme, real diagram edges, mobile/RTL controls and a score write reflected in another viewer’s diagram without navigation. It does not reset the main demonstration tournament. Evidence is saved in `e2e/evidence/streetball4biber-proof.json`.

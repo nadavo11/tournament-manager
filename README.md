@@ -1,10 +1,10 @@
-# Bracket Live — shared tournament workspace
+# Streetball4Biber — shared tournament workspace
 
-[Open the live demo](https://pretty-oriental-swap-priest.trycloudflare.com) · [Setup, architecture and demonstration guide](LIVE-README.md) · [Actual test evidence](e2e/evidence) · [Independent external verification](https://github.com/nadavo11/tournament-manager/actions/runs/39277564320)
+[Open the live demo](https://nadavo11.github.io/streetball4biber/) · [Setup, architecture and demonstration guide](LIVE-README.md) · [Actual test evidence](e2e/evidence) · [Independent external verification](https://github.com/nadavo11/tournament-manager/actions/runs/39277564320)
 
 This fork adds independent organizer and scorekeeper accounts, persistent live scores, standings, version conflicts, audit history, seeded group and knockout fixtures, and a mobile English/Hebrew interface to Bracket. Demo credentials are supplied privately on the host, never committed. Public viewers do not need an account.
 
-The public demo uses a temporary HTTPS tunnel and requires its Windows host to remain online. Its PostgreSQL database persists across app/database restarts. The complete original Bracket project, attribution, and AGPL-3.0 license are retained below.
+The public frontend uses the named GitHub Pages address above, with a connected live API behind a temporary HTTPS tunnel. The API requires its Windows host to remain online. Its PostgreSQL database persists across app/database restarts. The complete original Bracket project, attribution, and AGPL-3.0 license are retained below.
 
 ---
 

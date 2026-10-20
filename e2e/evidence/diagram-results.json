@@ -1,0 +1,149 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Users\\nadav\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe",
+      "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\node_modules\\playwright\\cli.js",
+      "test",
+      "--config=e2e/playwright.config.cjs",
+      "diagram.spec.cjs",
+      "--reporter=list,json",
+      "--output=e2e/diagram-test-results"
+    ],
+    "configFile": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\playwright.config.cjs",
+    "rootDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e/diagram-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/nadav/PycharmProjects/research-site/tournament-manager/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.cjs"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e\\diagram-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e",
+        "snapshotDir": "C:\\Users\\nadav\\PycharmProjects\\research-site\\tournament-manager\\e2e",
+        "testIgnore": [],
+        "testMatch": "*.spec.cjs",
+        "timeout": 180000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8400",
+          "headless": true,
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "diagram.spec.cjs",
+      "file": "diagram.spec.cjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "named Streetball4Biber site: admin3, dark theme, diagram and live scoring",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16058,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-20T10:39:24.623Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7190c11f6624137c4517-932e8d0460ede92c66c4",
+          "file": "diagram.spec.cjs",
+          "line": 5,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-20T10:39:23.262Z",
+    "duration": 18212.647,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

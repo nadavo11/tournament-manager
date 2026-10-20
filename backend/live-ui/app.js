@@ -1,5 +1,7 @@
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
+const apiOrigin = window.BIBER_API_ORIGIN || "";
+$("#source-download").href = apiOrigin + "/source.zip";
 let token = sessionStorage.getItem("bracket-token"),
   user = null,
   state = null,
@@ -9,6 +11,7 @@ let token = sessionStorage.getItem("bracket-token"),
   lang = localStorage.getItem("language") || "en",
   polling = false;
 const words = {
+  Diagram: "תרשים הטורניר",
   Groups: "בתים",
   Matches: "משחקים",
   Standings: "טבלה",
@@ -38,7 +41,7 @@ const esc = (s) =>
       ],
   );
 async function api(path, opt = {}) {
-  let r = await fetch("/api" + path, {
+  let r = await fetch(apiOrigin + "/api" + path, {
     ...opt,
     headers: {
       ...(token ? { Authorization: "Bearer " + token } : {}),
@@ -87,7 +90,13 @@ const role = () =>
 const canScore = () => ["OWNER", "COLLABORATOR"].includes(role());
 function team(m, n) {
   let i = m["stage_item_input" + n];
-  if(i?.winner_from_stage_item_id && !i.team) return (allItems().find(g=>g.id===i.winner_from_stage_item_id)?.name||"Group")+" #"+i.winner_position;
+  if (i?.winner_from_stage_item_id && !i.team)
+    return (
+      (allItems().find((g) => g.id === i.winner_from_stage_item_id)?.name ||
+        "Group") +
+      " #" +
+      i.winner_position
+    );
   return (
     i?.team?.name ||
     (m["stage_item_input" + n + "_winner_from_match_id"]
@@ -119,7 +128,14 @@ function render() {
       : "Every result. Every team. One shared tournament.";
   $("#feed-title").textContent = tr("The latest");
   $("#admin").hidden = role() !== "OWNER";
-  $("#tabs").innerHTML = ["Groups", "Matches", "Standings", "Knockout"]
+  $(".workspace").classList.toggle("diagram-mode", tab === "Diagram");
+  $("#tabs").innerHTML = [
+    "Groups",
+    "Matches",
+    "Standings",
+    "Knockout",
+    "Diagram",
+  ]
     .map(
       (t) =>
         `<button class="${t === tab ? "active" : ""}" data-tab="${t}">${tr(t)}</button>`,
@@ -187,7 +203,9 @@ function render() {
     else
       html += `<div class="knockout">${ko.rounds.map((r, i) => `<section class="ko-round"><h3>${["FINAL", "SEMIFINALS", "QUARTERFINALS", "ROUND OF 16", "ROUND OF 32"][ko.rounds.length - 1 - i]}</h3>${r.matches.map((m) => card({ ...m, item: ko.name, round: r.name }, true)).join("")}</section>`).join("")}</div>`;
   }
+  if (tab === "Diagram") html = renderDiagram();
   $("#content").innerHTML = html;
+  bindDiagramControls();
   $("#feed").innerHTML = state.audit.length
     ? state.audit
         .slice(0, 7)
@@ -261,7 +279,7 @@ async function load(force = false) {
 function edit(id) {
   let m = allMatches().find((m) => m.id === id);
   modal(
-    `<div class="kicker" style="color:#628151">MATCH #${id} · ${esc(m.item)}</div><h2>${tr("Edit score")}</h2><p>Changes are shared with every connected device.</p><form id="score-form"><div class="score-inputs"><label>${esc(team(m, 1))}<input name="home" aria-label="Home score" type="number" min="0" max="999" value="${m.stage_item_input1_score}" required></label><label>${esc(team(m, 2))}<input name="away" aria-label="Away score" type="number" min="0" max="999" value="${m.stage_item_input2_score}" required></label></div><label>Match status<select name="status">${["PENDING", "LIVE", "COMPLETED"].map((s) => `<option ${m.live_status === s ? "selected" : ""}>${s}</option>`).join("")}</select></label>${m.type === "SINGLE_ELIMINATION" ? `<label>Penalty / overtime winner (if tied)<select name="tiebreak"><option value="">Choose if tied</option><option value="1">${esc(team(m, 1))}</option><option value="2">${esc(team(m, 2))}</option></select></label>` : ""}<p class="error" role="alert"></p><button type="submit">${tr("Save result")}</button><button type="button" id="latest" hidden>Load latest score</button></form>`,
+    `<div class="kicker" style="color:#ff9aaa">MATCH #${id} · ${esc(m.item)}</div><h2>${tr("Edit score")}</h2><p>Changes are shared with every connected device.</p><form id="score-form"><div class="score-inputs"><label>${esc(team(m, 1))}<input name="home" aria-label="Home score" type="number" min="0" max="999" value="${m.stage_item_input1_score}" required></label><label>${esc(team(m, 2))}<input name="away" aria-label="Away score" type="number" min="0" max="999" value="${m.stage_item_input2_score}" required></label></div><label>Match status<select name="status">${["PENDING", "LIVE", "COMPLETED"].map((s) => `<option ${m.live_status === s ? "selected" : ""}>${s}</option>`).join("")}</select></label>${m.type === "SINGLE_ELIMINATION" ? `<label>Penalty / overtime winner (if tied)<select name="tiebreak"><option value="">Choose if tied</option><option value="1">${esc(team(m, 1))}</option><option value="2">${esc(team(m, 2))}</option></select></label>` : ""}<p class="error" role="alert"></p><button type="submit">${tr("Save result")}</button><button type="button" id="latest" hidden>Load latest score</button></form>`,
   );
   let form = $("#score-form");
   form.onsubmit = async (e) => {
@@ -307,7 +325,7 @@ function login() {
       button = e.target.querySelector("button");
     button.disabled = true;
     try {
-      let r = await fetch("/api/token", {
+      let r = await fetch(apiOrigin + "/api/token", {
         method: "POST",
         body: new URLSearchParams({
           username: f.get("email"),

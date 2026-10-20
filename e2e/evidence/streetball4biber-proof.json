@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "url": "https://nadavo11.github.io/streetball4biber/",
+  "backend": "https://prospective-deposits-estimates-view.trycloudflare.com",
+  "checkedAt": "2026-10-20T10:39:40.640Z",
+  "checks": [
+    "admin3 login and organizer permissions",
+    "red dark theme",
+    "four groups, seven knockout nodes, fifteen actual dependency edges",
+    "viewer has no diagram editing controls",
+    "UI score write updates viewer diagram points without navigation",
+    "390px layout and fit/100% controls",
+    "Hebrew RTL diagram"
+  ]
+}

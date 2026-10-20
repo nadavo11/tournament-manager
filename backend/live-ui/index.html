@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#102b25" />
-    <title>Bracket Live · Tournament workspace</title>
+    <meta name="theme-color" content="#160d13" />
+    <title>Streetball4Biber · Live tournament</title>
     <link rel="stylesheet" href="/live-assets/style.css" />
   </head>
   <body>
     <header>
-      <a class="brand" href="/">bracket<span>live</span><i>●</i></a>
+      <a class="brand" href="/">streetball<span>4biber</span><i>●</i></a>
       <div class="header-right">
         <span id="connection" role="status">Connecting…</span
         ><button id="language">עברית</button><button id="auth">Sign in</button>
@@ -17,11 +17,13 @@
     </header>
     <main>
       <div class="eyebrow">
-        THE TOURNAMENT WORKSPACE <span>2026 SEASON</span>
+        STREETBALL4BIBER / TOURNAMENT HQ <span>2026 SEASON</span>
       </div>
       <section class="hero">
         <div>
-          <div class="kicker" id="event-label">COMMUNITY CUP / LIVE EVENT</div>
+          <div class="kicker" id="event-label">
+            STREETBALL4BIBER / LIVE EVENT
+          </div>
           <h1 id="title">The game is on.</h1>
           <p id="subtitle">Every result. Every team. One shared tournament.</p>
         </div>
@@ -69,7 +71,7 @@
         <span
           >Built on <a href="https://github.com/evroon/bracket">Bracket</a> by
           Erik Vroon & contributors · AGPL-3.0</span
-        ><a href="/source.zip">Download running source</a
+        ><a id="source-download" href="/source.zip">Download running source</a
         ><span>Play together. Stay in sync.</span>
       </footer>
     </main>
@@ -78,6 +80,8 @@
       <button class="close" aria-label="Close dialog">×</button>
       <div id="modal"></div>
     </dialog>
+    <script src="/live-assets/site-config.js" defer></script>
+    <script src="/live-assets/diagram.js" defer></script>
     <script src="/live-assets/app.js" defer></script>
   </body>
 </html>
