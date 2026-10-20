@@ -1,0 +1,46 @@
+# Paid resources: provision only after the owner approves hosting charges.
+services:
+  - type: web
+    name: streetball4biber
+    runtime: docker
+    repo: https://github.com/nadavo11/tournament-manager
+    branch: codex/live-tournament
+    region: frankfurt
+    plan: starter
+    dockerfilePath: ./Dockerfile.cloud
+    dockerContext: .
+    autoDeployTrigger: "off"
+    preDeployCommand: /app/.venv/bin/python cloud_preflight.py
+    healthCheckPath: /health/ready
+    envVars:
+      - key: PG_DSN
+        fromDatabase:
+          name: streetball4biber-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENVIRONMENT
+        value: PRODUCTION
+      - key: API_PREFIX
+        value: /api
+      - key: SERVE_FRONTEND
+        value: "false"
+      - key: ALLOW_USER_REGISTRATION
+        value: "false"
+      - key: ALLOW_DEMO_USER_REGISTRATION
+        value: "false"
+      - key: CORS_ORIGINS
+        value: https://nadavo11.github.io
+      - key: CORS_ORIGIN_REGEX
+        value: ^https://nadavo11[.]github[.]io$
+      - key: REQUIRED_TOURNAMENT_IDS
+        value: "1,8"
+databases:
+  - name: streetball4biber-db
+    region: frankfurt
+    plan: 0.1c-256mb
+    diskSizeGB: 1
+    postgresMajorVersion: "17"
+    databaseName: streetball4biber
+    user: streetball4biber
+    ipAllowList: []

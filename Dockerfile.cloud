@@ -1,0 +1,17 @@
+FROM python:3.13-slim AS source
+WORKDIR /source
+COPY . .
+RUN python tools/package_container_source.py /source.zip
+
+FROM python:3.13-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+WORKDIR /app
+COPY backend/pyproject.toml backend/uv.lock ./
+RUN uv sync --locked --no-dev
+COPY backend ./
+COPY --from=source /source.zip /app/source.zip
+RUN mkdir -p static && useradd --system bracket && chown -R bracket /app
+USER bracket
+ENV ENVIRONMENT=PRODUCTION API_PREFIX=/api SERVE_FRONTEND=false
+EXPOSE 8400
+CMD ["/app/.venv/bin/python", "serve_cloud.py"]

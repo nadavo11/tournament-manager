@@ -147,6 +147,15 @@ async def running_source() -> FileResponse:
     return FileResponse("source.zip", filename="bracket-live-source.zip")
 
 
+@app.get("/health/ready", include_in_schema=False)
+async def readiness() -> JSONResponse:
+    try:
+        await database.fetch_val("SELECT 1")
+    except Exception:
+        return JSONResponse({"ready": False}, status_code=503)
+    return JSONResponse({"ready": True})
+
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next: RequestResponseEndpoint) -> Response:
     start_time = time.time()

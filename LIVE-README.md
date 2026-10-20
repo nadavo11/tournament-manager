@@ -4,6 +4,8 @@ A functional multi-user scoring workspace built on [evroon/bracket](https://gith
 
 ## Current demonstration
 
+The PC/tunnel deployment below is a temporary demonstration, not the production tournament host. A managed backend/database deployment and verified migration tools are prepared in [CLOUD-DEPLOYMENT.md](CLOUD-DEPLOYMENT.md). Cloud provisioning remains pending hosting-account access and the owner's approval of recurring charges.
+
 Public frontend: https://nadavo11.github.io/streetball4biber/
 
 Source: https://github.com/nadavo11/tournament-manager/tree/codex/live-tournament
