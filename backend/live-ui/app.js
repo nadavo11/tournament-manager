@@ -299,7 +299,7 @@ function edit(id) {
 }
 function login() {
   modal(
-    `<h2>${tr("Sign in")}</h2><p>Your own account. The same shared tournament.</p><form id="login"><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><p class="error" role="alert"></p><button type="submit">${tr("Sign in")}</button></form>`,
+    `<h2>${tr("Sign in")}</h2><p>Your own account. The same shared tournament.</p><form id="login"><label>Email or username<input name="email" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><p class="error" role="alert"></p><button type="submit">${tr("Sign in")}</button></form>`,
   );
   $("#login").onsubmit = async (e) => {
     e.preventDefault();
