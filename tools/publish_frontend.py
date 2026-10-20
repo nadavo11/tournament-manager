@@ -28,12 +28,15 @@ def main():
         run("git", "init", "-b", "main")
         run("git", "remote", "add", "origin", f"https://github.com/{REPOSITORY}.git")
     run("git", "remote", "set-url", "origin", f"https://github.com/{REPOSITORY}.git")
-    for name in ("style.css", "app.js", "diagram.js"):
+    for name in ("style.css", "app.js", "diagram.js", "court.js"):
         (CHECKOUT / name).write_bytes(
             (ROOT / "backend" / "live-ui" / name).read_bytes()
         )
     html = (ROOT / "backend" / "live-ui" / "index.html").read_text(encoding="utf-8")
     html = html.replace("/live-assets/", "./").replace('href="/"', 'href="./"')
+    for name in ("style.css", "app.js", "diagram.js", "court.js"):
+        digest = hashlib.sha256((CHECKOUT / name).read_bytes()).hexdigest()[:12]
+        html = html.replace("./" + name, "./" + name + "?v=" + digest)
     html = html.replace(
         "./site-config.js",
         "./site-config.js?v=" + hashlib.sha256(origin.encode()).hexdigest()[:12],
@@ -60,6 +63,7 @@ def main():
         "style.css",
         "app.js",
         "diagram.js",
+        "court.js",
         "site-config.js",
         ".nojekyll",
         "LICENSE",

@@ -289,6 +289,10 @@ class Score(BaseModel):
 
 @router.put("/tournaments/{tid}/matches/{mid}")
 async def score(tid: int, mid: int, body: Score, user=Depends(user_authenticated)):
+    return await apply_score(tid, mid, body, user)
+
+
+async def apply_score(tid: int, mid: int, body: Score, user, *, basketball: bool = False):
     if await relation(user.id, tid) not in {"OWNER", "COLLABORATOR"}:
         raise HTTPException(403, "Scoring permission required")
     async with database.transaction():
@@ -307,6 +311,21 @@ async def score(tid: int, mid: int, body: Score, user=Depends(user_authenticated
         if row["live_version"] != body.version:
             raise HTTPException(
                 409, "Another scorekeeper changed this match. Review the latest score and retry."
+            )
+        if (
+            not basketball
+            and (
+                body.home != row["stage_item_input1_score"]
+                or body.away != row["stage_item_input2_score"]
+                or body.status != row["live_status"]
+                or body.tiebreak_winner != row["tiebreak_winner"]
+            )
+            and await database.fetch_val(
+                "SELECT id FROM basketball_events WHERE match_id=:m LIMIT 1", {"m": mid}
+            )
+        ):
+            raise HTTPException(
+                409, "This match has a play log. Use Live Court to control the game or correct a play."
             )
         if row["type"] == "ROUND_ROBIN" and tournament["knockout_started"]:
             raise HTTPException(
@@ -422,6 +441,11 @@ async def reset(tid: int, user=Depends(user_authenticated)):
             "SELECT id FROM live_tournaments WHERE id=:t FOR UPDATE", {"t": tid}
         )
         stages = await get_full_tournament_details(tid)
+        await database.execute(
+            "DELETE FROM basketball_games WHERE match_id IN (SELECT m.id FROM matches m JOIN rounds r ON r.id=m.round_id JOIN stage_items si ON si.id=r.stage_item_id JOIN stages s ON s.id=si.stage_id WHERE s.tournament_id=:t)",
+            {"t": tid},
+        )
+        await database.execute("DELETE FROM basketball_events WHERE tournament_id=:t", {"t": tid})
         for stage in reversed(stages[1:]):
             for item in stage.stage_items:
                 await database.execute(

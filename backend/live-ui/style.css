@@ -1043,3 +1043,798 @@ nav button.active {
   border-bottom-color: var(--accent);
   color: #ff99ab;
 }
+
+/* Live Court: the operator's scoreboard, with optional player attribution. */
+body.court-mode main > .hero,
+body.court-mode main > .eyebrow,
+body.court-mode #stats {
+  display: none;
+}
+body.court-mode main {
+  padding-top: 12px;
+}
+body.court-mode header {
+  height: 68px;
+}
+body.court-mode .toolbar {
+  margin: 10px 0 15px;
+}
+.workspace.court-mode {
+  grid-template-columns: minmax(0, 1fr);
+}
+.workspace.court-mode aside {
+  display: none;
+}
+.court-topbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 10px 0 16px;
+}
+.court-topbar h2 {
+  font-size: 24px;
+  margin-top: 5px;
+}
+.court-topbar .kicker {
+  font-size: 9px;
+}
+.court-match-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-inline-start: auto;
+  max-width: 480px;
+  min-width: 0;
+}
+.court-match-picker > span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.court-match-picker select {
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--surface);
+  padding: 10px;
+  border-radius: 7px;
+  min-height: 44px;
+  max-width: 100%;
+  font-size: 12px;
+}
+#court-fullscreen {
+  font-size: 23px;
+  padding: 4px 12px;
+  align-self: end;
+}
+.court-loading {
+  padding: 60px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+#court-board {
+  border: 1px solid #57313f;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 2% 30%, #2a1320, transparent 50%), #151219;
+  overflow: hidden;
+}
+.court-sync {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #d4a8b5;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  background: #291520;
+  padding: 9px 14px;
+  min-height: 34px;
+}
+.court-sync.is-error {
+  background: #4b1f2a;
+  color: #ffd1da;
+  flex-wrap: wrap;
+}
+.court-sync button {
+  font-size: 10px;
+  padding: 4px 10px;
+  min-height: 30px;
+}
+.court-clock-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 25px 10px;
+}
+.court-clock-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.court-period {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #cfa3b2;
+}
+#court-clock {
+  font:
+    600 40px Manrope,
+    Arial;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 3px;
+  line-height: 1.2;
+  color: #c0b3be;
+}
+#court-clock.running {
+  color: #fff;
+}
+.court-preset {
+  font-size: 10px;
+  color: var(--muted);
+}
+.court-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  padding: 12px 25px 24px;
+}
+.court-team {
+  min-width: 0;
+  position: relative;
+  text-align: center;
+  background: #211822;
+  border: 1px solid #48303e;
+  border-radius: 10px;
+  padding: 20px 20px 15px;
+}
+.court-team-1 {
+  border-top: 3px solid #e64563;
+}
+.court-team-2 {
+  border-top: 3px solid #e3ccd8;
+}
+.court-team-heading {
+  position: relative;
+  min-height: 68px;
+}
+.court-team-tag {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #d6abbc;
+  font-weight: 700;
+}
+.court-team-heading h3 {
+  font: 700 21px Manrope;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.court-possession {
+  display: block;
+  min-height: 15px;
+  font-size: 10px;
+  color: #ff8da7;
+}
+.court-score {
+  font:
+    700 clamp(56px, 6vw, 88px) Manrope,
+    Arial;
+  letter-spacing: -3px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  margin: 9px 0 15px;
+}
+.court-team-counts {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 11px;
+  color: #c2a8b8;
+}
+.court-team-counts b {
+  color: #fff;
+  font-size: 14px;
+  margin-inline-end: 3px;
+}
+.court-attribution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  font-size: 10px;
+  color: #efc4d2;
+  margin-top: 8px;
+}
+.court-attribution button {
+  min-height: 24px;
+  min-width: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 16px;
+}
+.court-point-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.85fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+.court-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 86px;
+  border-color: #c53856;
+  background: #9e233e;
+  color: #fff;
+  padding: 10px 6px;
+  touch-action: manipulation;
+}
+.court-point:hover {
+  background: #c52a4a;
+  border-color: #ff708e;
+}
+.court-point strong {
+  font: 700 31px Manrope;
+  line-height: 1.3;
+}
+.court-point small {
+  font-size: 10px;
+  color: #ffcad7;
+  line-height: 1.5;
+}
+.court-point.free-throw {
+  background: #3b2130;
+  border-color: #68404f;
+}
+.court-point.free-throw strong {
+  font-size: 25px;
+}
+.court-secondary-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 44px;
+  gap: 8px;
+  margin-top: 9px;
+}
+.court-secondary-buttons button {
+  background: #2c202c;
+  font-size: 11px;
+  padding: 9px 6px;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+.court-game-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 20px;
+  border-top: 1px solid #422738;
+  background: #1d151e;
+}
+.court-game-controls button {
+  font-size: 11px;
+  padding: 10px 14px;
+  touch-action: manipulation;
+}
+.court-game-controls button:first-child {
+  border-color: #b74561;
+  color: #ffadc1;
+}
+.court-game-controls .court-finish {
+  background: #8e2440;
+  border-color: #ae3452;
+  color: #fff;
+}
+.court-mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0;
+}
+.court-mode-switch button {
+  font-size: 12px;
+  min-width: 115px;
+}
+.court-mode-switch button.active,
+.court-team-tabs button.active {
+  background: #9e2642;
+  border-color: #b3425e;
+  color: #fff;
+}
+.court-mode-switch > span {
+  font-size: 11px;
+  color: var(--muted);
+  margin-inline-start: 10px;
+  line-height: 1.6;
+}
+.court-player-section {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #171219;
+}
+.court-player-section .section-head {
+  margin: 0 0 15px;
+}
+.court-player-section .section-head button {
+  font-size: 11px;
+}
+.court-team-tabs {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.court-team-tabs button {
+  min-width: 120px;
+  font-size: 11px;
+}
+.court-player-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 10px;
+}
+.court-player-card {
+  text-align: start;
+  padding: 14px;
+  background: #241a25;
+  border: 1px solid #4e3445;
+  min-height: 120px;
+  position: relative;
+}
+.court-player-card.selected {
+  border: 2px solid #ff6c8a;
+  background: #3a1c2b;
+  padding: 13px;
+}
+.court-player-name {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.court-player-name > b {
+  color: #ff96b1;
+  font-size: 12px;
+}
+.court-player-name > small {
+  margin-inline-start: auto;
+  font-size: 8px;
+  color: #c6a2b1;
+}
+.court-player-numbers {
+  display: flex;
+  gap: 18px;
+  margin: 12px 0 10px;
+}
+.court-player-numbers > span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 8px;
+  font-weight: 500;
+  color: #bb9cad;
+}
+.court-player-numbers b {
+  font: 700 21px Manrope;
+  color: #fff;
+}
+.court-shooting {
+  display: block;
+  font-size: 9px;
+  color: #bd9fb0;
+  line-height: 1.8;
+  font-weight: 400;
+}
+.court-unassigned {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 15px 0;
+  line-height: 1.8;
+}
+.court-player-actions {
+  background: #221520;
+  border: 1px solid #4d283d;
+  border-radius: 8px;
+  padding: 16px;
+}
+.court-recording-for {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #bb9cad;
+  font-size: 11px;
+  margin-bottom: 13px;
+}
+.court-recording-for strong {
+  color: #ffb3c7;
+  font-size: 13px;
+}
+.court-recording-for button {
+  min-height: 28px;
+  min-width: 28px;
+  padding: 0;
+  background: transparent;
+}
+.court-player-actions > div:last-of-type {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 8px;
+}
+.court-player-actions > div:last-of-type button {
+  font-size: 11px;
+  min-height: 46px;
+  touch-action: manipulation;
+}
+.court-player-actions p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+.court-adjust {
+  padding: 14px 16px;
+  background: #1f1620;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.court-adjust summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 24px;
+}
+.court-adjust p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.court-adjust > div {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.court-adjust > div > span {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.court-adjust button {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 15px;
+  padding: 5px 12px;
+}
+.court-log {
+  margin: 25px 0;
+}
+.court-log-entry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 13px 5px;
+}
+.court-log-clock {
+  min-width: 48px;
+  font-size: 9px;
+  color: #e9a5b9;
+  text-align: center;
+}
+.court-log-clock time {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.court-log-entry > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.court-log-entry strong {
+  font-size: 12px;
+}
+.court-log-entry > div > span {
+  font-size: 11px;
+  color: #d4b4c5;
+}
+.court-log-entry small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.court-log-entry button {
+  font-size: 10px;
+  min-height: 36px;
+  padding: 8px 12px;
+}
+.court-log-entry.undone strong {
+  text-decoration: line-through;
+  color: #b28c9e;
+}
+.court-open {
+  font-size: 10px;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: #ff9bb5;
+  border-color: #714054;
+}
+.ko-round .court-open {
+  margin-top: 10px;
+  width: 100%;
+}
+.court-log .section-head span {
+  font-size: 10px;
+}
+.court-player-cards .empty {
+  grid-column: 1/-1;
+}
+@media (max-width: 760px) {
+  body.court-mode header {
+    height: 60px;
+  }
+  body.court-mode main {
+    padding-top: 4px;
+  }
+  body.court-mode .toolbar {
+    margin: 6px 0 10px;
+  }
+  .court-topbar {
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .court-topbar > div {
+    flex: 1;
+  }
+  .court-topbar h2 {
+    font-size: 20px;
+  }
+  .court-match-picker {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+  }
+  .court-match-picker > span {
+    display: none;
+  }
+  .court-match-picker select {
+    width: 100%;
+    font-size: 11px;
+  }
+  .court-clock-bar {
+    padding: 12px 13px 7px;
+    gap: 6px;
+  }
+  .court-clock-bar > div {
+    gap: 8px;
+  }
+  #court-clock {
+    font-size: 30px;
+    letter-spacing: 2px;
+  }
+  .court-period {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .court-preset {
+    font-size: 8px;
+    max-width: 85px;
+    text-align: end;
+  }
+  .court-teams {
+    padding: 8px 10px 13px;
+    gap: 9px;
+  }
+  .court-team {
+    padding: 13px 9px 10px;
+  }
+  .court-team-heading {
+    min-height: 68px;
+  }
+  .court-team-heading h3 {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 7px 0;
+    min-height: 38px;
+  }
+  .court-team-tag {
+    font-size: 8px;
+  }
+  .court-possession {
+    font-size: 8px;
+    min-height: 12px;
+  }
+  .court-score {
+    font-size: 58px;
+    letter-spacing: -2px;
+    margin: 5px 0 10px;
+  }
+  .court-team-counts {
+    gap: 7px;
+    flex-direction: column;
+    font-size: 9px;
+  }
+  .court-team-counts b {
+    font-size: 11px;
+  }
+  .court-attribution {
+    font-size: 9px;
+    line-height: 1.4;
+    min-height: 38px;
+    margin-top: 5px;
+  }
+  .court-point-buttons {
+    gap: 5px;
+  }
+  .court-point {
+    min-height: 68px;
+    padding: 5px 2px;
+  }
+  .court-point strong {
+    font-size: 26px;
+  }
+  .court-point.free-throw strong {
+    font-size: 23px;
+  }
+  .court-point small {
+    font-size: 8px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+  }
+  .court-secondary-buttons {
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+  .court-secondary-buttons button {
+    font-size: 9px;
+    min-height: 44px;
+    padding: 7px 3px;
+  }
+  .court-secondary-buttons button:last-child {
+    grid-column: 1/-1;
+    min-height: 30px;
+    font-size: 15px;
+  }
+  .court-game-controls {
+    padding: 12px 10px;
+    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .court-game-controls button {
+    padding: 8px 4px;
+    font-size: 9px;
+    min-height: 44px;
+  }
+  .court-mode-switch {
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 16px 0;
+  }
+  .court-mode-switch button {
+    flex: 1;
+    font-size: 11px;
+  }
+  .court-mode-switch > span {
+    flex-basis: 100%;
+    font-size: 10px;
+    margin: 3px 0;
+  }
+  .court-player-section {
+    padding: 13px;
+  }
+  .court-player-section .section-head h3 {
+    font-size: 13px;
+  }
+  .court-player-section .section-head button {
+    font-size: 10px;
+    padding: 8px;
+  }
+  .court-team-tabs button {
+    min-width: 0;
+    flex: 1;
+    font-size: 10px;
+  }
+  .court-player-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+  .court-player-card {
+    padding: 10px;
+    min-height: 125px;
+  }
+  .court-player-card.selected {
+    padding: 9px;
+  }
+  .court-player-name {
+    font-size: 11px;
+    gap: 4px;
+  }
+  .court-player-name > b {
+    font-size: 10px;
+  }
+  .court-player-numbers {
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+  .court-player-numbers b {
+    font-size: 18px;
+  }
+  .court-shooting {
+    font-size: 8px;
+  }
+  .court-player-actions {
+    padding: 12px;
+  }
+  .court-player-actions > div:last-of-type {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .court-player-actions > div:last-of-type button {
+    font-size: 9px;
+    padding: 7px 4px;
+    min-height: 45px;
+  }
+  .court-recording-for {
+    flex-wrap: wrap;
+    font-size: 10px;
+  }
+  .court-recording-for strong {
+    font-size: 11px;
+  }
+  .court-unassigned {
+    font-size: 10px;
+  }
+  .court-log-entry {
+    gap: 9px;
+  }
+  .court-log .section-head {
+    align-items: start;
+    gap: 10px;
+  }
+  .court-log .section-head span {
+    max-width: 120px;
+    text-align: end;
+    line-height: 1.5;
+  }
+  .court-log-entry > div > span {
+    font-size: 10px;
+  }
+  .court-log-entry small {
+    font-size: 9px;
+  }
+  .match-card {
+    flex-wrap: wrap;
+  }
+  .match-card .match-info {
+    flex-basis: 70%;
+  }
+  .match-card .court-open {
+    margin-inline-start: auto;
+  }
+  .court-loading {
+    padding: 35px 15px;
+  }
+  .court-sync {
+    font-size: 9px;
+    line-height: 1.7;
+  }
+}

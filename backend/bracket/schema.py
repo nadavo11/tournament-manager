@@ -268,3 +268,55 @@ live_audit = Table(
     Column("after", Text, nullable=False),
     Column("created", DateTimeTZ, nullable=False, server_default=func.now()),
 )
+
+basketball_games = Table(
+    "basketball_games",
+    metadata,
+    Column("match_id", BigInteger, ForeignKey("matches.id", ondelete="CASCADE"), primary_key=True),
+    Column("profile", String, nullable=False, server_default="standard"),
+    Column("period", Integer, nullable=False, server_default="1"),
+    Column("period_count", Integer, nullable=False, server_default="4"),
+    Column("period_seconds", Integer, nullable=False, server_default="600"),
+    Column("remaining_ms", BigInteger, nullable=False, server_default="600000"),
+    Column("started_at", DateTimeTZ, nullable=True),
+    Column("possession", Integer, nullable=True),
+)
+
+basketball_jerseys = Table(
+    "basketball_jerseys",
+    metadata,
+    Column("player_id", BigInteger, ForeignKey("players.id", ondelete="CASCADE"), primary_key=True),
+    Column("jersey", String(3), nullable=False, server_default=""),
+)
+
+basketball_events = Table(
+    "basketball_events",
+    metadata,
+    Column("id", BigInteger, primary_key=True),
+    Column(
+        "tournament_id",
+        BigInteger,
+        ForeignKey("tournaments.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+    Column(
+        "match_id",
+        BigInteger,
+        ForeignKey("matches.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+    Column("request_id", String(36), nullable=False),
+    Column("kind", String(35), nullable=False),
+    Column("side", Integer, nullable=True),
+    Column("player_id", BigInteger, ForeignKey("players.id", ondelete="SET NULL"), nullable=True),
+    Column("period", Integer, nullable=False),
+    Column("clock_ms", BigInteger, nullable=False),
+    Column("actor", String, nullable=False),
+    Column("payload", Text, nullable=False),
+    Column("created", DateTimeTZ, nullable=False, server_default=func.now()),
+    Column("undone_at", DateTimeTZ, nullable=True),
+    Column("undone_by", String, nullable=True),
+    UniqueConstraint("match_id", "request_id", name="uq_basketball_request"),
+)

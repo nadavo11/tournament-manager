@@ -6,11 +6,15 @@ let token = sessionStorage.getItem("bracket-token"),
   user = null,
   state = null,
   tid = Number(new URLSearchParams(location.search).get("t")) || null,
-  tab = "Groups",
+  tab =
+    new URLSearchParams(location.search).get("view") === "live"
+      ? "Live Court"
+      : "Groups",
   filter = "All",
   lang = localStorage.getItem("language") || "en",
   polling = false;
 const words = {
+  "Live Court": "לוח חי",
   Diagram: "תרשים הטורניר",
   Groups: "בתים",
   Matches: "משחקים",
@@ -109,7 +113,7 @@ function table(item, full = false) {
   return `<table data-table="${item.id}"><thead><tr><th>#</th><th>${lang === "he" ? "קבוצה" : "TEAM"}</th><th>P</th>${full ? "<th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th>" : ""}<th>GD</th><th>PTS</th></tr></thead><tbody>${rows.map((r, i) => `<tr class="${i < state.tournament.qualify ? "qualified" : ""}"><td>${i + 1}</td><td>${esc(r.name)}</td><td>${r.wins + r.draws + r.losses}</td>${full ? `<td>${r.wins}</td><td>${r.draws}</td><td>${r.losses}</td><td>${r.goals_for}</td><td>${r.goals_against}</td>` : ""}<td>${r.goals_for - r.goals_against > 0 ? "+" : ""}${r.goals_for - r.goals_against}</td><td>${Number(r.points)}</td></tr>`).join("")}</tbody></table>`;
 }
 function card(m, knockout = false) {
-  return `<article class="match-card" data-match="${m.id}"><span class="badge ${m.live_status}">${tr(m.live_status)}</span><div class="match-info"><small>${esc(m.item)} · ${esc(m.round)} · #${m.id}</small><div class="teams"><span class="team-name">${esc(team(m, 1))}</span><b class="score-display">${m.stage_item_input1_score} – ${m.stage_item_input2_score}</b><span class="team-name">${esc(team(m, 2))}</span></div>${m.tiebreak_winner ? `<small>Penalty / overtime winner: ${esc(team(m, m.tiebreak_winner))}</small>` : ""}</div>${canScore() ? `<button class="edit" data-edit="${m.id}" ${!m.stage_item_input1?.team || !m.stage_item_input2?.team ? "disabled" : ""}>${tr("Edit score")}</button>` : ""}</article>`;
+  return `<article class="match-card" data-match="${m.id}"><span class="badge ${m.live_status}">${tr(m.live_status)}</span><div class="match-info"><small>${esc(m.item)} · ${esc(m.round)} · #${m.id}</small><div class="teams"><span class="team-name">${esc(team(m, 1))}</span><b class="score-display">${m.stage_item_input1_score} – ${m.stage_item_input2_score}</b><span class="team-name">${esc(team(m, 2))}</span></div>${m.tiebreak_winner ? `<small>Penalty / overtime winner: ${esc(team(m, m.tiebreak_winner))}</small>` : ""}</div><button class="court-open" data-open-court="${m.id}">${tr("Live Court")}</button>${canScore() ? `<button class="edit" data-edit="${m.id}" ${!m.stage_item_input1?.team || !m.stage_item_input2?.team ? "disabled" : ""}>${tr("Edit score")}</button>` : ""}</article>`;
 }
 function render() {
   document.documentElement.lang = lang;
@@ -129,8 +133,11 @@ function render() {
   $("#feed-title").textContent = tr("The latest");
   $("#admin").hidden = role() !== "OWNER";
   $(".workspace").classList.toggle("diagram-mode", tab === "Diagram");
+  $(".workspace").classList.toggle("court-mode", tab === "Live Court");
+  document.body.classList.toggle("court-mode", tab === "Live Court");
   $("#tabs").innerHTML = [
     "Groups",
+    "Live Court",
     "Matches",
     "Standings",
     "Knockout",
@@ -204,8 +211,10 @@ function render() {
       html += `<div class="knockout">${ko.rounds.map((r, i) => `<section class="ko-round"><h3>${["FINAL", "SEMIFINALS", "QUARTERFINALS", "ROUND OF 16", "ROUND OF 32"][ko.rounds.length - 1 - i]}</h3>${r.matches.map((m) => card({ ...m, item: ko.name, round: r.name }, true)).join("")}</section>`).join("")}</div>`;
   }
   if (tab === "Diagram") html = renderDiagram();
+  if (tab === "Live Court") html = renderCourt();
   $("#content").innerHTML = html;
   bindDiagramControls();
+  bindCourt();
   $("#feed").innerHTML = state.audit.length
     ? state.audit
         .slice(0, 7)
@@ -223,7 +232,13 @@ function render() {
     (b) =>
       (b.onclick = () => {
         tab = b.dataset.tab;
+        const address = new URL(location.href);
+        if (tab === "Live Court") address.searchParams.set("view", "live");
+        else address.searchParams.delete("view");
+        history.replaceState({}, "", address);
         render();
+        if (tab === "Live Court")
+          window.scrollTo({ top: 0, behavior: "smooth" });
       }),
   );
   $$("[data-filter]").forEach(
@@ -239,6 +254,21 @@ function render() {
         tab = "Matches";
         filter = allItems().find((i) => i.id == b.dataset.group).name;
         render();
+      }),
+  );
+  $$("[data-open-court]").forEach(
+    (b) =>
+      (b.onclick = () => {
+        courtMatchId = Number(b.dataset.openCourt);
+        courtState = null;
+        courtSelected = { 1: null, 2: null };
+        tab = "Live Court";
+        const address = new URL(location.href);
+        address.searchParams.set("view", "live");
+        address.searchParams.set("match", courtMatchId);
+        history.replaceState({}, "", address);
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }),
   );
   $$("[data-edit]").forEach(

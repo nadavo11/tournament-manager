@@ -37,6 +37,7 @@ from bracket.utils.asyncio import AsyncioTasksManager
 from bracket.utils.db_init import init_db_when_empty
 from bracket.utils.logging import logger
 from bracket.live import router as live_router, legacy_write_guard
+from bracket.basketball import router as basketball_router
 
 init_sentry()
 
@@ -132,6 +133,7 @@ app.add_middleware(
 )
 app.middleware("http")(legacy_write_guard)
 app.include_router(live_router, tags=["Live scoring"])
+app.include_router(basketball_router, tags=["Basketball Live Court"])
 app.mount("/live-assets", StaticFiles(directory="live-ui"), name="live-assets")
 
 

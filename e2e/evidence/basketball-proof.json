@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "url": "https://nadavo11.github.io/streetball4biber/",
+  "checkedAt": "2026-10-20T11:20:31.283Z",
+  "tournament": 14,
+  "checks": [
+    "concurrent relative scoring",
+    "idempotent lost-response retry",
+    "read-only viewer sync without navigation",
+    "wrong-team player rejection",
+    "player totals, attempts, rebounds, assists and undo",
+    "stale control conflict",
+    "expired clock remains stopped",
+    "final game protection and reopen",
+    "streetball 1/2 scoring with separate free throws",
+    "organizer-only roster edits and legacy editor protection",
+    "390px quick and player layouts",
+    "no JavaScript errors"
+  ]
+}
