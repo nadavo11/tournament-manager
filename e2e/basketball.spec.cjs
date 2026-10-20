@@ -8,7 +8,7 @@ test("Live Court: concurrent/idempotent scoring, player stats, undo, clock and i
   const accounts = JSON.parse(
     fs.readFileSync("../.local/demo-accounts.json", "utf8"),
   );
-  const base = "http://127.0.0.1:8400";
+  const base = process.env.SETUP_API_URL || "http://127.0.0.1:8400";
   const frontend = process.env.FRONTEND_URL || base + "/";
   const context = await browser.newContext();
   const request = context.request;

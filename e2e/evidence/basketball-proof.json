@@ -1,8 +1,8 @@
 {
   "passed": true,
   "url": "https://nadavo11.github.io/streetball4biber/",
-  "checkedAt": "2026-10-20T11:20:31.283Z",
-  "tournament": 14,
+  "checkedAt": "2026-10-20T21:19:04.085Z",
+  "tournament": 15,
   "checks": [
     "concurrent relative scoring",
     "idempotent lost-response retry",

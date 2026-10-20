@@ -20,7 +20,12 @@ def run(*args):
 
 
 def main():
-    origin = (ROOT / ".local" / "active-url.txt").read_text().strip()
+    managed = ROOT / ".local" / "managed-api-url.txt"
+    origin = (
+        (managed if managed.exists() else ROOT / ".local" / "active-url.txt")
+        .read_text()
+        .strip()
+    )
     if not origin.startswith("https://"):
         raise ValueError("A public HTTPS backend is required")
     CHECKOUT.mkdir(parents=True, exist_ok=True)
@@ -52,9 +57,15 @@ def main():
         "Corresponding full source, backend, tests and upstream attribution: "
         "https://github.com/nadavo11/tournament-manager\n\n"
         "AGPL-3.0. Original Bracket by Erik Vroon and contributors.\n\n"
-        "This frontend uses the shared PostgreSQL-backed API hosted on the tournament computer. "
-        "The host and HTTPS tunnel must stay online. Refresh the backend address by running "
-        "`tools/publish_frontend.py` from the main source checkout after renewing its tunnel.\n"
+        + (
+            "The backend and PostgreSQL run on Render Free at " + origin + ". "
+            "The user's computer and a tunnel are not required. The free service sleeps "
+            "on inactivity; export results after the weekend before the database expires.\n"
+            if managed.exists()
+            else "This frontend uses the shared PostgreSQL-backed API hosted on the tournament computer. "
+            "The host and HTTPS tunnel must stay online. Refresh the backend address by running "
+            "`tools/publish_frontend.py` from the main source checkout after renewing its tunnel.\n"
+        )
     )
     run(
         "git",

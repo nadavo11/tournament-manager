@@ -1,4 +1,10 @@
-# Managed hosting cutover — prepared, not deployed
+# Managed free weekend hosting — live
+
+Deployed and verified on October 21, 2026 (Asia/Jerusalem): frontend https://nadavo11.github.io/streetball4biber/ and backend https://streetball4biber.onrender.com. Both Render resources show **Free**. The database dashboard reports expiration on **November 19, 2026**. No paid resources were selected.
+
+All 20 table counts matched the consistent migration snapshot. The three existing tournaments and seven users were preserved. All three admin accounts passed browser login on the published Pages site. The basketball concurrency/idempotency/player-stat/undo/viewer/mobile test and diagram/standings synchronization test passed against Render with the local Python server, PostgreSQL and cloudflared all stopped. Disposable test tournaments were removed. Evidence: `e2e/evidence/managed-hosting-proof.json`, `basketball-proof.json`, `streetball4biber-proof.json`, and `render-live-scoreboard.png`. The container build and cloud startup are now verified. These are functional multi-device checks, not a large-event capacity benchmark.
+
+An independent GitHub-hosted client also verified the named Pages frontend, its Render API configuration, actual tournament data/standings, and downloadable source: [successful external check](https://github.com/nadavo11/tournament-manager/actions/runs/39499981278).
 
 The PC/tunnel deployment is a temporary demo and is unsuitable as the tournament's production host. Do not describe it as tournament-ready. This configuration preserves the existing FastAPI/Bracket engine, PostgreSQL schema, users, passwords, rosters, tournaments and scoring logic.
 
@@ -8,7 +14,7 @@ The owner requires a free tier and clarified that the app is needed only for the
 
 Render's free backend sleeps after 15 minutes without incoming traffic and takes about a minute to wake. Normal live-view polling generates incoming requests while participants actually use the app; do not add artificial keep-alive traffic. Open and verify the site before the first game and after long breaks. PostgreSQL has 1 GB of persistent storage and expires 30 days after creation. Export the final database/results immediately after the weekend. Free PostgreSQL has no provider-managed recovery backups; use explicit logical exports. Free-tier usage quotas can suspend service, so review the account's remaining hours/bandwidth and test representative concurrent use before the event. Render explicitly does not recommend its free tier for production; this is a limited-duration, best-effort choice under the owner's $0 constraint, not a reliability guarantee.
 
-No cloud resources have been provisioned. Hosting account access is the only required user step currently missing. Sign in to Render with GitHub using [the prepared free deployment](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fnadavo11%2Ftournament-manager%2Ftree%2Fcodex%2Flive-tournament). Never ask for passwords or tokens in chat.
+The existing Render Blueprint is `streetball4biber-weekend`; do not provision a duplicate. Use the existing free service/database for subsequent work. Account credentials and migration connection details remain private under `.local`; never commit them or request passwords in chat. The steps below document the completed cutover and future recovery procedure.
 
 ## Prepared deployment
 
@@ -36,6 +42,6 @@ Do not reopen writes on both databases after cutover: that would split scores ac
 
 ## Checks performed before account access
 
-The migration rehearsal exported a consistent database snapshot, restored it into a separate temporary database, verified all 20 table row counts, and confirmed a second restore is refused without changing existing data. The temporary test database was removed. The source database and existing tournaments were retained. Private evidence is in `.local/backups/cloud-migration-verification.json`. Cloud configuration and existing scoring/ranking tests pass locally. Docker is unavailable on this host, so an actual container build and cloud deployment remain unverified until provider access is supplied.
+The migration rehearsal exported a consistent database snapshot, restored it into a separate temporary database, verified all 20 table row counts, and confirmed a second restore is refused without changing existing data. The temporary test database was removed. The source database and existing tournaments were retained. Private evidence is in `.local/backups/cloud-migration-verification.json`. Cloud configuration and existing scoring/ranking tests pass locally. The container was subsequently built and deployed successfully by Render. A fresh cloud database export was saved privately after cloud tests and test-fixture cleanup. Temporary external database migration access was removed; the API continues to reach PostgreSQL through Render's private network.
 
 Provider references: [Blueprint fields](https://render.com/docs/blueprint-spec), [health checks](https://render.com/docs/health-checks), [paid database recovery](https://render.com/docs/postgresql-backups), [pricing](https://render.com/pricing).

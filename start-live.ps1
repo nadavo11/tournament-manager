@@ -1,9 +1,15 @@
-param([switch]$RenewTunnel)
+param([switch]$RenewTunnel, [switch]$LocalOnly)
 $ErrorActionPreference = 'Stop'
 $repoRoot = $PSScriptRoot
 $runtimeRoot = Join-Path (Split-Path $repoRoot) '.runtime'
 $backendRoot = Join-Path $repoRoot 'backend'
 $privateRoot = Join-Path $repoRoot '.local'
+$managedAddress = Join-Path $privateRoot 'managed-api-url.txt'
+if ((Test-Path -LiteralPath $managedAddress) -and -not $LocalOnly) {
+    Write-Output ('Managed backend: ' + (Get-Content -LiteralPath $managedAddress -Raw).Trim())
+    Write-Output 'The tournament no longer needs this PC or a tunnel. Use -LocalOnly only for local development.'
+    return
+}
 & (Join-Path $runtimeRoot 'pgsql\bin\pg_ctl.exe') -D (Join-Path $runtimeRoot 'pgdata') status
 if ($LASTEXITCODE -ne 0) {
     & (Join-Path $runtimeRoot 'pgsql\bin\pg_ctl.exe') -D (Join-Path $runtimeRoot 'pgdata') -l (Join-Path $runtimeRoot 'postgres.log') -o '-p 55432 -h 127.0.0.1' start
@@ -11,6 +17,10 @@ if ($LASTEXITCODE -ne 0) {
 $active = Get-NetTCPConnection -LocalPort 8400 -State Listen -ErrorAction SilentlyContinue
 if (-not $active) {
     Start-Process -FilePath (Join-Path $backendRoot '.venv\Scripts\python.exe') -ArgumentList 'serve_live.py' -WorkingDirectory $backendRoot -RedirectStandardOutput (Join-Path $privateRoot 'server.log') -RedirectStandardError (Join-Path $privateRoot 'server-error.log') -WindowStyle Hidden
+}
+if ($LocalOnly) {
+    Write-Output 'Local development only: http://127.0.0.1:8400. Public hosting configuration was not changed.'
+    return
 }
 $tunnelExe = Join-Path $runtimeRoot 'cloudflared.exe'
 $ownedTunnels = @(Get-CimInstance Win32_Process -Filter "Name='cloudflared.exe'" | Where-Object { $_.ExecutablePath -eq $tunnelExe -and $_.CommandLine -match '127\.0\.0\.1:8400' })

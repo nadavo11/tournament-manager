@@ -1,8 +1,8 @@
 {
   "passed": true,
   "url": "https://nadavo11.github.io/streetball4biber/",
-  "backend": "https://prospective-deposits-estimates-view.trycloudflare.com",
-  "checkedAt": "2026-10-20T10:39:40.640Z",
+  "backend": "https://streetball4biber.onrender.com",
+  "checkedAt": "2026-10-20T21:19:41.023Z",
   "checks": [
     "admin3 login and organizer permissions",
     "red dark theme",
