@@ -262,6 +262,7 @@ async function loadCourt(force = false) {
     const data = await api(
       `/live/tournaments/${requestedTid}/basketball/matches/${requestedMid}` +
         since,
+      { authenticated: false },
     );
     if (requestedTid !== tid || requestedMid !== courtMatchId) return;
     courtOffline = false;

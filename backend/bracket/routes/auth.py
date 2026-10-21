@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from heliclockter import datetime_utc, timedelta
 from jwt import DecodeError, ExpiredSignatureError
 from pydantic import BaseModel
+from starlette.concurrency import run_in_threadpool
 from starlette.requests import Request
 
 from bracket.config import config
@@ -56,7 +57,8 @@ class TokenData(BaseModel):
 async def authenticate_user(email: str, password: str) -> UserInDB | None:
     user = await get_user(email)
 
-    if not user or not verify_password(password, user.password_hash):
+    # bcrypt is CPU-bound; keep live reads responsive while a password is checked.
+    if not user or not await run_in_threadpool(verify_password, password, user.password_hash):
         return None
 
     return user

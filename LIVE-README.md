@@ -61,6 +61,24 @@ Known limitations: free Render inactivity wake-up, monthly quotas and database e
 
 ## Streetball4Biber frontend update
 
+Guest startup loads the public tournament list, standings, fixtures, knockout diagram,
+Live Court, player statistics and event log independently of session restoration.
+Public reads omit the bearer token; score and organizer writes still require the
+existing server-side permissions. Failed startup connections retry automatically,
+including non-JSON hosting wake-up responses and requests that exceed 15 seconds.
+Shared Live Court links retain their view and match selection after loading.
+
+Signing in shows progress and a server wake-up explanation after three seconds.
+Successful login fetches the user's permissions and renders immediately, without
+waiting for another full tournament snapshot. Backend bcrypt verification runs in
+a worker thread so login does not block the event loop serving live reads. These
+changes do not remove Render Free's inactivity cold start or change the hosting plan.
+
+The isolated startup regression suite needs no database, account credentials or live
+writes: from `e2e`, run `npm ci`, `npx playwright install chromium`, then
+`npm run test:public` with Node 20+. It serves the native UI locally and mocks API
+timing/errors. Set `PUBLIC_UI_DIR` to a generated Pages checkout to test that layout.
+
 The interface now uses a red dark palette, native dark form controls, and Streetball4Biber branding. The Diagram tab is built from the actual stages, standings, and `winner_from_match_id` relationships: groups → quarterfinals → semifinals → final → champion. It includes fit/100% controls, horizontal scrolling, live standings and score updates, Hebrew/RTL labels, and match edit links for authorized users. It does not calculate an independent bracket.
 
 The same frontend runs directly from FastAPI or from the named Pages address. Same-origin mode uses `site-config.js` with an empty API origin. `python tools/publish_frontend.py` publishes the frontend files, license, attribution and a public API origin to the separate `streetball4biber` repository. No credentials are included. Set `CORS_ORIGIN_REGEX=^https://nadavo11[.]github[.]io$` in the private runtime environment to allow the named frontend. Authentication still uses independent JWT sessions and all permissions remain enforced in FastAPI.

@@ -4,7 +4,8 @@
   "description": "Independent multi-user browser proof for Bracket Live",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:public": "playwright test --config public-startup.config.cjs"
   },
   "keywords": [],
   "author": "",
