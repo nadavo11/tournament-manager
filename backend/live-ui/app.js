@@ -12,7 +12,9 @@ let token = sessionStorage.getItem("bracket-token"),
       : "Groups",
   filter = "All",
   lang = localStorage.getItem("language") || "en",
-  polling = false;
+  polling = null,
+  connecting = false,
+  sessionVersion = 0;
 const words = {
   "Live Court": "לוח חי",
   Diagram: "תרשים הטורניר",
@@ -44,24 +46,44 @@ const esc = (s) =>
         c
       ],
   );
-async function api(path, opt = {}) {
-  let r = await fetch(apiOrigin + "/api" + path, {
-    ...opt,
-    headers: {
-      ...(token ? { Authorization: "Bearer " + token } : {}),
-      ...(opt.body ? { "Content-Type": "application/json" } : {}),
-      ...opt.headers,
-    },
-  });
-  if (!r.ok) {
-    let e = await r.json().catch(() => ({ detail: r.statusText }));
-    let msg =
-      typeof e.detail === "string" ? e.detail : JSON.stringify(e.detail);
-    let err = new Error(msg);
-    err.status = r.status;
+async function api(
+  path,
+  { authenticated = true, timeoutMs = 15000, ...opt } = {},
+) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const r = await fetch(apiOrigin + "/api" + path, {
+      ...opt,
+      signal: controller.signal,
+      headers: {
+        ...(authenticated && token ? { Authorization: "Bearer " + token } : {}),
+        ...(opt.body && !(opt.body instanceof URLSearchParams)
+          ? { "Content-Type": "application/json" }
+          : {}),
+        ...opt.headers,
+      },
+    });
+    const data = await r.json().catch(() => null);
+    if (!r.ok || data === null) {
+      const detail =
+        data?.detail || "Server unavailable. Please try again shortly.";
+      const err = new Error(
+        typeof detail === "string" ? detail : JSON.stringify(detail),
+      );
+      err.status = r.status;
+      throw err;
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError")
+      throw new Error(
+        "The server is taking longer than usual. Please try again shortly.",
+      );
     throw err;
+  } finally {
+    clearTimeout(timeout);
   }
-  return r.json();
 }
 let toastTimer;
 function toast(s) {
@@ -276,14 +298,32 @@ function render() {
   );
 }
 async function load(force = false) {
-  if (!tid || polling) return;
-  polling = true;
+  if (!tid) return;
+  if (polling) {
+    if (!force) return polling;
+    await polling;
+    return load(true);
+  }
+  polling = fetchSnapshot(force);
+  try {
+    await polling;
+  } finally {
+    polling = null;
+  }
+}
+async function fetchSnapshot(force) {
+  const requestedTid = tid;
+  const waking = setTimeout(() => {
+    if (!state) $("#connection").textContent = "Waking server · please wait…";
+  }, 3000);
   try {
     const data = await api(
       "/live/tournaments/" +
-        tid +
+        requestedTid +
         (!force && state ? "?since=" + state.tournament.revision : ""),
+      { authenticated: false },
     );
+    if (tid !== requestedTid) return;
     $("#connection").textContent = tr("Live · Synced");
     if (data.unchanged) return;
     let changed =
@@ -299,11 +339,12 @@ async function load(force = false) {
       }
     }
   } catch (e) {
+    if (tid !== requestedTid) return;
     $("#connection").textContent = "Offline · retrying";
     if (!state)
       $("#content").innerHTML = `<p class="error">${esc(e.message)}</p>`;
   } finally {
-    polling = false;
+    clearTimeout(waking);
   }
 }
 function edit(id) {
@@ -347,38 +388,54 @@ function edit(id) {
 }
 function login() {
   modal(
-    `<h2>${tr("Sign in")}</h2><p>Your own account. The same shared tournament.</p><form id="login"><label>Email or username<input name="email" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><p class="error" role="alert"></p><button type="submit">${tr("Sign in")}</button></form>`,
+    `<h2>${tr("Sign in")}</h2><p>Anyone can browse every tournament view without signing in. Sign in to keep scores or organize.</p><form id="login"><label>Email or username<input name="email" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><p class="error" role="alert"></p><p class="login-status" role="status"></p><button type="submit">${tr("Sign in")}</button></form>`,
   );
   $("#login").onsubmit = async (e) => {
     e.preventDefault();
-    let f = new FormData(e.target),
-      button = e.target.querySelector("button");
+    const form = e.target;
+    let f = new FormData(form),
+      button = form.querySelector("button");
     button.disabled = true;
+    button.textContent = "Signing in…";
+    form.querySelector(".error").textContent = "";
+    const waking = setTimeout(() => {
+      form.querySelector(".login-status").textContent =
+        "Waiting for the server. After inactivity it can take about a minute to wake up.";
+    }, 3000);
+    const previousToken = token;
+    const version = ++sessionVersion;
     try {
-      let r = await fetch(apiOrigin + "/api/token", {
+      const d = await api("/token", {
+        authenticated: false,
+        timeoutMs: 90000,
         method: "POST",
         body: new URLSearchParams({
-          username: f.get("email"),
+          username: f.get("email").trim(),
           password: f.get("password"),
         }),
       });
-      let d = await r.json();
-      if (!r.ok) throw Error(d.detail);
+      if (version !== sessionVersion) return;
       token = d.access_token;
+      const profile = await api("/live/me");
+      if (version !== sessionVersion) return;
+      user = profile;
       sessionStorage.setItem("bracket-token", token);
-      user = await api("/live/me");
       $("#dialog").close();
-      await load(true);
       render();
     } catch (err) {
-      $("#login .error").textContent = err.message;
+      if (version === sessionVersion) token = previousToken;
+      form.querySelector(".error").textContent = err.message;
     } finally {
+      clearTimeout(waking);
+      form.querySelector(".login-status").textContent = "";
       button.disabled = false;
+      button.textContent = tr("Sign in");
     }
   };
 }
 $("#auth").onclick = () => {
   if (user) {
+    sessionVersion++;
     token = null;
     user = null;
     sessionStorage.removeItem("bracket-token");
@@ -475,43 +532,72 @@ $("#invite").onclick = () => {
   };
 };
 async function refreshList() {
-  let list = await api("/live/tournaments");
+  let list = await api("/live/tournaments", { authenticated: false });
   $("#tournaments").innerHTML = list
     .map((t) => `<option value="${t.id}">${esc(t.name)}</option>`)
     .join("");
   if (!tid || !list.some((t) => t.id === tid)) tid = list[0]?.id;
   $("#tournaments").value = tid;
-  history.replaceState({}, "", `?t=${tid}`);
+  const address = new URL(location.href);
+  if (tid) address.searchParams.set("t", tid);
+  else address.searchParams.delete("t");
+  history.replaceState({}, "", address);
+  if (!list.length) {
+    $("#connection").textContent = "No public tournaments";
+    $("#content").innerHTML =
+      '<div class="empty">No public tournaments are available yet.</div>';
+  }
 }
 $("#tournaments").onchange = async (e) => {
   tid = Number(e.target.value);
   state = null;
-  history.replaceState({}, "", `?t=${tid}`);
+  const address = new URL(location.href);
+  address.searchParams.set("t", tid);
+  address.searchParams.delete("match");
+  history.replaceState({}, "", address);
   await load(true);
 };
-(async () => {
+async function connectPublic() {
+  if (connecting) return;
+  connecting = true;
+  const waking = setTimeout(() => {
+    if (!state) $("#connection").textContent = "Waking server · please wait…";
+  }, 3000);
   try {
-    if (token) {
-      try {
-        user = await api("/live/me");
-      } catch {
-        token = null;
-        sessionStorage.removeItem("bracket-token");
-      }
-    }
-    await refreshList();
-    await load(true);
-    render();
+    if (!state) await refreshList();
+    await load();
   } catch (e) {
+    $("#connection").textContent = "Offline · retrying";
     $("#content").innerHTML = `<p class="error">${esc(e.message)}</p>`;
+  } finally {
+    clearTimeout(waking);
+    connecting = false;
   }
-  setInterval(() => {
-    if (!document.hidden) load();
-  }, 2000);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) load();
-  });
+}
+render();
+connectPublic();
+// Public data must never wait for a saved session or depend on its validity.
+(async () => {
+  if (!token) return;
+  const version = sessionVersion;
+  try {
+    const profile = await api("/live/me");
+    if (version !== sessionVersion) return;
+    user = profile;
+    render();
+  } catch (err) {
+    if (version === sessionVersion && err.status === 401) {
+      token = null;
+      sessionStorage.removeItem("bracket-token");
+    }
+  }
 })();
+setInterval(() => {
+  if (!document.hidden) connectPublic();
+}, 2000);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) connectPublic();
+});
 
 $("#reshuffle").onclick = async () => {
   try {
